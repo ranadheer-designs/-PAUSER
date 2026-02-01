@@ -1,0 +1,70 @@
+/**
+ * Card Styles
+ */
+
+.card {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+}
+
+:global([data-theme='light']) .card {
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.interactive {
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.interactive:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.header {
+  border-bottom: 1px solid var(--color-bg-secondary);
+  padding: var(--space-4);
+}
+
+.body {
+  /* Body inherits padding from card padding class */
+}
+
+/* Padding variants */
+
+.padding-sm {
+  padding: var(--space-3);
+}
+
+.padding-sm .header {
+  margin: calc(-1 * var(--space-3));
+  margin-bottom: var(--space-3);
+  padding: var(--space-3);
+}
+
+.padding-md {
+  padding: var(--space-4);
+}
+
+.padding-md .header {
+  margin: calc(-1 * var(--space-4));
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+}
+
+.padding-lg {
+  padding: var(--space-6);
+}
+
+.padding-lg .header {
+  margin: calc(-1 * var(--space-6));
+  margin-bottom: var(--space-6);
+  padding: var(--space-6);
+}

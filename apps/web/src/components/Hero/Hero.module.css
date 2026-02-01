@@ -1,0 +1,235 @@
+/* Hero.module.css */
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-global, #0B0D0F);
+  overflow: hidden;
+  color: var(--text-primary, #E6EEF8);
+  padding: 80px 0;
+}
+
+.bgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.contentContainer {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 24px;
+}
+
+.logoContainer {
+  margin-bottom: 32px;
+}
+
+
+
+.title {
+  font-family: var(--font-inter, sans-serif);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.highlightText {
+  color: var(--text-primary);
+  opacity: 0.85;
+}
+
+.subtitle {
+  font-family: var(--font-inter, sans-serif);
+  font-weight: 400;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 24px 0 40px;
+  max-width: 650px;
+  opacity: 0.9;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 16px;
+}
+
+.inputWrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputField {
+  width: 100%;
+  background: rgba(15, 19, 22, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 16px 20px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.inputField:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(59, 75, 216, 0.15);
+  background: rgba(15, 19, 22, 0.95);
+}
+
+.errorText {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 4px;
+  color: var(--color-error);
+  font-size: 0.85rem;
+}
+
+.buttonPrimary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  padding: 0 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.buttonPrimary:hover {
+  background-color: var(--color-highlight);
+  box-shadow: 0 0 20px rgba(110, 90, 242, 0.3);
+  transform: translateY(-1px);
+}
+
+
+
+.microCopy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+  margin-top: 24px;
+}
+
+/* Navigation Header */
+.navHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(11, 13, 15, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+}
+
+.navButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navLoading {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.signInBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.signInBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.signUpBtn {
+  background: var(--color-primary);
+  border: none;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.signUpBtn:hover {
+  background: var(--color-highlight);
+  box-shadow: 0 0 20px rgba(110, 90, 242, 0.25);
+  transform: translateY(-1px);
+}
+
+.dashboardButton {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-highlight));
+  border: none;
+  color: #FFFFFF;
+  padding: 10px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboardButton:hover {
+  box-shadow: 0 0 24px rgba(110, 90, 242, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .navHeader {
+    padding: 12px 16px;
+  }
+  
+  .navButtons {
+    gap: 8px;
+  }
+  
+  .signInBtn,
+  .signUpBtn,
+  .dashboardButton {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+}

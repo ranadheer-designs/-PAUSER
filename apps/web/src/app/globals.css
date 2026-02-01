@@ -1,0 +1,145 @@
+/* 
+  Pauser - Locked Design Language based on theme.md
+  Verified & Polished for Consistency
+*/
+
+:root {
+  /* Color System */
+  --bg-global: #0B0D0F;
+  --bg-surface: #0F1316;
+  --bg-secondary: #111418;
+  
+  --color-primary: #3B4BD8;
+  --color-accent: #22C3A6;
+  --color-highlight: #6E5AF2;
+  --color-error: #F06A6A;
+  
+  --text-primary: #E6EEF8;
+  --text-secondary: #98A0B2;
+  --text-muted: #6F7A96;
+  
+  /* Compatibility Aliases (Mapping Theme to Component Expectations) */
+  --bg-background: var(--bg-global);
+  --color-foreground: var(--text-primary);
+  --color-foreground-muted: var(--text-secondary);
+  
+  /* CRITICAL: Component Legacy Bindings (Fixes Sidebar & UI) */
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-subtle: var(--border-subtle);
+
+  /* Typography */
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-family-primary: var(--font-inter);
+  --font-family-mono: var(--font-jb-mono), 'JetBrains Mono', monospace;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Surfaces */
+  --bg-glass: rgba(15, 19, 22, 0.6);
+
+  /* Component Aliases */
+  --font-sans: var(--font-family-primary);
+  --font-mono: var(--font-family-mono);
+  
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  
+  /* Radii */
+  --radius-card: 12px;
+  --radius-modal: 16px;
+  
+  /* Shadows */
+  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(59, 75, 216, 0.15); /* Primary glow */
+}
+
+
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+
+body {
+  background-color: var(--bg-global);
+  /* Premium Dark Mode Gradient */
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(59, 75, 216, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(110, 90, 242, 0.05) 0%, transparent 30%);
+  background-attachment: fixed;
+  
+  color: var(--text-primary);
+  font-family: var(--font-family-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.01em;
+}
+
+
+
+h1 { font-size: 32px; line-height: 40px; }
+h2 { font-size: 24px; line-height: 32px; }
+h3 { font-size: 20px; line-height: 28px; }
+
+p {
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-highlight);
+}
+
+/* Utilities */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.panel {
+  background: rgba(15, 19, 22, 0.6); /* Semi-transparent surface */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-panel);
+}
+
+
+

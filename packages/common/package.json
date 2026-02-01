@@ -1,0 +1,39 @@
+{
+  "name": "@pauser/common",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared types, SRS algorithm, and challenge engine for Pauser",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/server.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts src/server.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "vitest": "^1.2.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.90.1",
+    "zod": "^4.3.5"
+  }
+}

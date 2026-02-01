@@ -1,0 +1,251 @@
+/* Stats Card - Compact, Crisp, Premium Design */
+.card {
+  /* Compact glassmorphism */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px; /* Per design language spec */
+  padding: 1rem 1.25rem;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              border-color 0.18s ease, 
+              box-shadow 0.24s ease;
+              
+  position: relative;
+  overflow: hidden;
+  min-height: 100px;
+}
+
+/* Subtle top accent line */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.24s ease;
+}
+
+/* Hover Effect: Subtle Lift + Sharp Glow */
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* Interactive shine effect on hover */
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+/* ============================================
+   Accent Variations - Intent-based coloring
+   ============================================ */
+
+/* Primary Accent (Brand Blue - streaks) */
+.accentPrimary::before {
+  background: linear-gradient(90deg, transparent, #3B4BD8, transparent);
+}
+
+.accentPrimary:hover {
+  border-color: rgba(59, 75, 216, 0.3);
+  box-shadow: 0 8px 24px -8px rgba(59, 75, 216, 0.2);
+}
+
+.accentPrimary .value {
+  background: linear-gradient(180deg, #6E7AFF 0%, #3B4BD8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Success Accent (Teal - focus time, high rates) */
+.accentSuccess::before {
+  background: linear-gradient(90deg, transparent, #22C3A6, transparent);
+}
+
+.accentSuccess:hover {
+  border-color: rgba(34, 195, 166, 0.3);
+  box-shadow: 0 8px 24px -8px rgba(34, 195, 166, 0.2);
+}
+
+.accentSuccess .value {
+  background: linear-gradient(180deg, #4EECD4 0%, #22C3A6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Highlight Accent (Vibrant Purple - focus points) */
+.accentHighlight::before {
+  background: linear-gradient(90deg, transparent, #6E5AF2, transparent);
+}
+
+.accentHighlight:hover {
+  border-color: rgba(110, 90, 242, 0.3);
+  box-shadow: 0 8px 24px -8px rgba(110, 90, 242, 0.2);
+}
+
+.accentHighlight .value {
+  background: linear-gradient(180deg, #9D8AFF 0%, #6E5AF2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Typography - Sharp & Crisp
+   ============================================ */
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.6875rem; /* 11px - slightly smaller */
+  color: var(--text-muted, #6F7A96);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+
+.value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-top: 0.25rem;
+}
+
+/* Apply accent gradient to values */
+.accentPrimary .value {
+  background: linear-gradient(135deg, #FFFFFF 0%, #3B4BD8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.accentSuccess .value {
+  background: linear-gradient(135deg, #FFFFFF 0%, #22C3A6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtext {
+  font-size: 0.75rem; /* 12px */
+  color: var(--text-secondary, #98A0B2);
+  margin-top: 0.125rem;
+  font-weight: 500;
+}
+
+/* Progress Ring Styles */
+.progressWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressRing {
+  transform: rotate(-90deg);
+}
+
+.progressRingBg {
+  opacity: 0.1;
+  stroke: var(--text-muted);
+}
+
+.progressRingIndicator {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  stroke: currentColor;
+}
+
+.accentPrimary .progressRingIndicator {
+  color: #3B4BD8;
+}
+
+.accentSuccess .progressRingIndicator {
+  color: #22C3A6;
+}
+
+.progressPercent {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   Loading State (Skeleton)
+   ============================================ */
+
+.loading .skeletonLabel {
+  width: 60%;
+  height: 0.6875rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 3px;
+}
+
+.loading .skeletonValue {
+  width: 40%;
+  height: 2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.3; }
+}
+
+/* ============================================
+   Mount Animation - Value entrance
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card:not(.loading) .value {
+  animation: fadeInUp 0.36s ease-out;
+}

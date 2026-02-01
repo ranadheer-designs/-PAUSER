@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase & IndexedDB Test</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .test-section {
+      background: #2a2a2a;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .error { color: #ff6b6b; }
+    .success { color: #51cf66; }
+    .warning { color: #ffd43b; }
+    pre {
+      background: #1a1a1a;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Pauser Notes Sync Diagnostic</h1>
+  
+  <div class="test-section">
+    <h2>1. Check IndexedDB Notes</h2>
+    <button onclick="checkIndexedDB()">Check Local Notes</button>
+    <pre id="indexeddb-result">Click button to check...</pre>
+  </div>
+  
+  <div class="test-section">
+    <h2>2. Check Supabase Notes</h2>
+    <button onclick="checkSupabase()">Check Supabase Notes</button>
+    <pre id="supabase-result">Click button to check...</pre>
+  </div>
+  
+  <div class="test-section">
+    <h2>3. Trigger Manual Sync</h2>
+    <button onclick="triggerSync()">Sync Now</button>
+    <pre id="sync-result">Click button to sync...</pre>
+  </div>
+
+  <script type="module">
+    window.checkIndexedDB = async function() {
+      const result = document.getElementById('indexeddb-result');
+      result.textContent = 'Checking IndexedDB...';
+      
+      try {
+        const db = await new Promise((resolve, reject) => {
+          const request = indexedDB.open('pauser-notes', 1);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        
+        const tx = db.transaction('notes', 'readonly');
+        const store = tx.objectStore('notes');
+        const notes = await new Promise((resolve, reject) => {
+          const request = store.getAll();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        
+        const pendingNotes = notes.filter(n => n._pendingSync === 1);
+        
+        result.innerHTML = `<span class="success">✅ Found ${notes.length} notes in IndexedDB</span>\n`;
+        result.innerHTML += `<span class="warning">⚠️  ${pendingNotes.length} notes pending sync</span>\n\n`;
+        result.innerHTML += `Notes:\n${JSON.stringify(notes.map(n => ({
+          id: n.id,
+          body: n.body?.substring(0, 50),
+          contentId: n.contentId,
+          _pendingSync: n._pendingSync
+        })), null, 2)}`;
+      } catch (err) {
+        result.innerHTML = `<span class="error">❌ Error: ${err.message}</span>`;
+      }
+    };
+    
+    window.checkSupabase = async function() {
+      const result = document.getElementById('supabase-result');
+      result.textContent = 'Checking Supabase...';
+      
+      try {
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        const supabase = createClient(
+          'https://tjyefdpmqwffcoujpjek.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqeWVmZHBtcXdmZmNvdWpwamVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NTg3NzIsImV4cCI6MjA4NDEzNDc3Mn0.Z1qkICVwDOdHxYqR0aL8k3zmcn6PfJFncHLHaab-MwY'
+        );
+        
+        const { data: notes, error } = await supabase
+          .from('notes')
+          .select('id, body, content_id, created_at')
+          .limit(10);
+        
+        if (error) throw error;
+        
+        result.innerHTML = `<span class="success">✅ Found ${notes.length} notes in Supabase</span>\n\n`;
+        result.innerHTML += `Notes:\n${JSON.stringify(notes.map(n => ({
+          id: n.id,
+          body: n.body?.substring(0, 50),
+          content_id: n.content_id
+        })), null, 2)}`;
+      } catch (err) {
+        result.innerHTML = `<span class="error">❌ Error: ${err.message}</span>`;
+      }
+    };
+    
+    window.triggerSync = async function() {
+      const result = document.getElementById('sync-result');
+      result.textContent = 'Starting sync...';
+      
+      try {
+        // Import Supabase
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        const supabase = createClient(
+          'https://tjyefdpmqwffcoujpjek.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqeWVmZHBtcXdmZmNvdWpwamVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NTg3NzIsImV4cCI6MjA4NDEzNDc3Mn0.Z1qkICVwDOdHxYqR0aL8k3zmcn6PfJFncHLHaab-MwY'
+        );
+        
+        // Get pending notes from IndexedDB
+        const db = await new Promise((resolve, reject) => {
+          const request = indexedDB.open('pauser-notes', 1);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        
+        const tx = db.transaction('notes', 'readonly');
+        const store = tx.objectStore('notes');
+        const allNotes = await new Promise((resolve, reject) => {
+          const request = store.getAll();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        
+        const pendingNotes = allNotes.filter(n => n._pendingSync === 1);
+        
+        result.innerHTML = `Found ${pendingNotes.length} pending notes\n\n`;
+        
+        // Sync each note
+        for (const note of pendingNotes) {
+          result.innerHTML += `Syncing note ${note.id}...\n`;
+          
+          // First, get or create content record
+          let contentUuid;
+          const { data: existingContent } = await supabase
+            .from('contents')
+            .select('id')
+            .eq('external_id', note.contentId)
+            .eq('type', 'video')
+            .maybeSingle();
+          
+          if (existingContent) {
+            contentUuid = existingContent.id;
+            result.innerHTML += `  ✅ Found content: ${contentUuid}\n`;
+          } else {
+            result.innerHTML += `  Creating content for ${note.contentId}...\n`;
+            const { data: newContent, error: createError } = await supabase
+              .from('contents')
+              .insert({
+                type: 'video',
+                external_id: note.contentId,
+                title: `Video ${note.contentId}`,
+              })
+              .select('id')
+              .single();
+            
+            if (createError) {
+              result.innerHTML += `  <span class="error">❌ Failed to create content: ${createError.message}</span>\n`;
+              continue;
+            }
+            contentUuid = newContent.id;
+            result.innerHTML += `  ✅ Created content: ${contentUuid}\n`;
+          }
+          
+          // Now upsert the note
+          const { error: noteError } = await supabase
+            .from('notes')
+            .upsert({
+              id: note.id,
+              user_id: note.userId,
+              content_id: contentUuid,
+              start_time_seconds: note.startTimeSeconds,
+              body: note.body,
+              title: note.title,
+              is_draft: note.isDraft ?? true,
+              local_id: note.id,
+              synced_at: new Date().toISOString(),
+            });
+          
+          if (noteError) {
+            result.innerHTML += `  <span class="error">❌ Failed to sync note: ${noteError.message}</span>\n`;
+          } else {
+            result.innerHTML += `  <span class="success">✅ Synced successfully!</span>\n`;
+            
+            // Mark as synced in IndexedDB
+            const writeTx = db.transaction('notes', 'readwrite');
+            const writeStore = writeTx.objectStore('notes');
+            await writeStore.put({
+              ...note,
+              _pendingSync: 0,
+              syncedAt: new Date().toISOString(),
+            });
+          }
+          result.innerHTML += '\n';
+        }
+        
+        result.innerHTML += `<span class="success">✅ Sync complete!</span>`;
+      } catch (err) {
+        result.innerHTML += `<span class="error">❌ Error: ${err.message}\n${err.stack}</span>`;
+      }
+    };
+  </script>
+</body>
+</html>

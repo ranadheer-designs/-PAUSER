@@ -1,0 +1,215 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 480px; 
+  width: 100%;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  color: #6F7A96;
+  font-size: 14px;
+}
+
+.progressContainer {
+  height: 6px;
+  width: 100%;
+  background: #1a1d21;
+  border-radius: 3px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #3B4BD8, #6E5AF2);
+  transition: width 0.3s ease;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+  height: 50px;
+  margin-top: 16px;
+}
+
+.actionButton {
+  padding: 0 24px;
+  height: 48px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 100px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.revealBtn {
+  background: #3B4BD8;
+  color: #fff;
+  width: 100%;
+  max-width: 280px;
+  border: none;
+}
+.revealBtn:hover {
+  background: #4a5ae0;
+  transform: translateY(-1px);
+}
+
+/* Rating Buttons */
+.rateAgain {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  flex: 1;
+}
+.rateAgain:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+}
+
+.rateHard {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+  flex: 1;
+}
+.rateHard:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+}
+
+.rateGood {
+  background: rgba(34, 195, 166, 0.1);
+  border: 1px solid rgba(34, 195, 166, 0.3);
+  color: #22C3A6;
+  flex: 1;
+}
+.rateGood:hover {
+  background: rgba(34, 195, 166, 0.2);
+  border-color: #22C3A6;
+}
+
+.rateEasy {
+  background: rgba(59, 75, 216, 0.1);
+  border: 1px solid rgba(59, 75, 216, 0.3);
+  color: #3B4BD8;
+  flex: 1;
+}
+.rateEasy:hover {
+  background: rgba(59, 75, 216, 0.2);
+  border-color: #3B4BD8;
+}
+
+/* Finish Screen */
+.finishScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  background: #111418;
+  border: 1px solid #2a2f38;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.finishTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #E6EEF8;
+  margin: 16px 0 8px;
+}
+
+.finishEmoji {
+  font-size: 48px;
+}
+
+.finishStats {
+  color: #6F7A96;
+  margin-bottom: 32px;
+}
+
+.finishActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.primaryBtn {
+  background: #3B4BD8;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+.primaryBtn:hover { background: #4a5ae0; }
+
+.secondaryBtn {
+  background: transparent;
+  color: #6F7A96;
+  border: 1px solid #2a2f38;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+.secondaryBtn:hover {
+  border-color: #6F7A96;
+  color: #E6EEF8;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  text-align: center;
+  color: #6F7A96;
+  background: #0B0D0F;
+  border-radius: 12px;
+  border: 1px dashed #2a2f38;
+  width: 100%;
+  height: 100%;
+  gap: 8px;
+}
+
+.emptyIcon {
+  color: #3B4BD8;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.emptyActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  width: 100%;
+  max-width: 220px;
+}

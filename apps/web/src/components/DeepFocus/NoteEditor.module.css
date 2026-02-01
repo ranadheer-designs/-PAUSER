@@ -1,0 +1,120 @@
+/* Note Editor Styles - Pauser Design System */
+
+.editor {
+  background: var(--surface-primary, #0F1316);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.timestamp {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-secondary, #98A0B2);
+  font-weight: 500;
+}
+
+.status {
+  flex: 1;
+  text-align: right;
+  font-size: 13px;
+  min-width: 60px;
+}
+
+.saving {
+  color: var(--accent, #22C3A6);
+  opacity: 0.7;
+}
+
+.saved {
+  color: var(--accent, #22C3A6);
+}
+
+.error {
+  color: var(--error, #F06A6A);
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #6F7A96);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 120ms ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary, #E6EEF8);
+}
+
+.closeButton:active {
+  transform: scale(0.98);
+}
+
+.titleInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px 0;
+  margin-bottom: 12px;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary, #E6EEF8);
+  outline: none;
+  transition: border-color 180ms ease;
+}
+
+.titleInput::placeholder {
+  color: var(--text-muted, #6F7A96);
+}
+
+.titleInput:focus {
+  border-bottom-color: var(--brand, #3B4BD8);
+}
+
+.bodyTextarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 8px 0;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--text-primary, #E6EEF8);
+  outline: none;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.bodyTextarea::placeholder {
+  color: var(--text-muted, #6F7A96);
+}
+
+.errorMessage {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(240, 106, 106, 0.1);
+  border-left: 2px solid var(--error, #F06A6A);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--error, #F06A6A);
+}

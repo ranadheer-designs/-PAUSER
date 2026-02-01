@@ -1,0 +1,191 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background-color: var(--color-bg-surface);
+  border-right: 1px solid var(--color-bg-secondary);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.collapsed {
+  width: 80px;
+  padding: 24px 12px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  width: 100%;
+  padding-left: 4px;
+}
+
+.collapsed .header {
+  flex-direction: column;
+  gap: 24px; /* Space between logo and toggle */
+  padding-left: 0;
+  margin-bottom: 32px;
+}
+
+.toggleButton {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--color-text-secondary); /* Very subtle text color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  margin-right: -8px; /* Pull right to align with edge */
+}
+
+.toggleButton:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary); /* Light gray on hover */
+  border-color: var(--color-border-subtle);
+}
+
+.collapsed .toggleButton {
+  margin-right: 0;
+  transform: none; /* No rotation needed */
+  width: 100%; /* Full width in collapsed mode for easier clicking */
+  height: 24px;
+  border-radius: 4px;
+}
+
+.logoWrapper {
+  display: flex;
+  justify-content: flex-start;
+  transition: all 0.3s ease;
+}
+
+.collapsed .logoWrapper {
+  justify-content: center;
+  padding-left: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.collapsed .navItem {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.navItem:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.navItemActive {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.navItemActive .icon {
+  color: var(--color-primary);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-bg-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 8px;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-family-primary);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.themeToggle:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.collapsed .themeToggle {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.collapsed .footer {
+  padding-top: 16px;
+}
+
+.authWrapper {
+  width: 100%;
+}
+
+.collapsed .authWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* Hide auth details in collapsed mode */
+.collapsed :global(.AuthButton_userInfo__7_F_e),
+.collapsed :global(.AuthButton_signOutButton__M_k_o span),
+.collapsed :global(.AuthButton_signInButton__m_x_z span) {
+  display: none !important;
+}
+
+/* We need to be careful with global selectors if AuthButton uses CSS modules.
+   Alternatively, we can pass isCollapsed to AuthButton.
+*/

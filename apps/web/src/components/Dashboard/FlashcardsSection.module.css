@@ -1,0 +1,13 @@
+.wrapper {
+  background-color: #0B0D0F; /* Match dashboard tab background */
+  border-radius: 0 0 8px 8px; /* Assuming tabs are top */
+  min-height: 500px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  color: #6F7A96;
+}

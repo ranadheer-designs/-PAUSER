@@ -1,0 +1,195 @@
+/**
+ * CheckpointOverlay Styles
+ * 
+ * Following Pauser Design Language:
+ * - Modal radius: 14px
+ * - Surface: #0F1316
+ * - Brand: #3B4BD8
+ * - Motion: 240-360ms
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(11, 13, 15, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  animation: fadeIn 240ms ease-out;
+  padding: 24px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background-color: #0F1316;
+  border-radius: 14px;
+  padding: 24px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: slideUp 300ms ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalLarge {
+  max-width: 640px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #1a1d21;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #E6EEF8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #6F7A96;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 150ms ease;
+}
+
+.closeButton:hover {
+  color: #98A0B2;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid #3B4BD8;
+  outline-offset: 2px;
+}
+
+/* Content */
+.content {
+  margin-bottom: 0;
+}
+
+/* Placeholder for legacy checkpoints */
+.placeholder {
+  padding: 24px;
+  background-color: #111418;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.placeholderText {
+  font-size: 16px;
+  color: #98A0B2;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+/* Actions for legacy checkpoints */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.primaryButton {
+  background-color: #3B4BD8;
+  color: #E6EEF8;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background-color: #4a5ae0;
+}
+
+.primaryButton:active {
+  transform: scale(0.98);
+}
+
+.primaryButton:disabled {
+  background-color: #1a1d21;
+  color: #6F7A96;
+  cursor: not-allowed;
+}
+
+.primaryButton:focus-visible {
+  outline: 2px solid #6E5AF2;
+  outline-offset: 2px;
+}
+
+.secondaryButton {
+  background-color: transparent;
+  color: #6F7A96;
+  border: 1px solid #2a2f38;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  color: #98A0B2;
+  border-color: #3a4048;
+}
+
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButton:focus-visible {
+  outline: 2px solid #6E5AF2;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .modal {
+    padding: 20px;
+    max-height: 85vh;
+  }
+  
+  .modalLarge {
+    max-width: 100%;
+  }
+}

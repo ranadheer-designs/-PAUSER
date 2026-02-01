@@ -1,0 +1,227 @@
+.practiceCheckpoint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 20px);
+}
+
+/* Header with problem info */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md, 16px);
+}
+
+.platformIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #ffa116 0%, #ff8c00 100%);
+  box-shadow: 0 4px 12px rgba(255, 161, 22, 0.3);
+}
+
+.platformIcon.hackerrank {
+  background: linear-gradient(135deg, #00ea64 0%, #00c050 100%);
+  box-shadow: 0 4px 12px rgba(0, 234, 100, 0.3);
+}
+
+.platformIcon.codewars {
+  background: linear-gradient(135deg, #b1361e 0%, #8a2a17 100%);
+  box-shadow: 0 4px 12px rgba(177, 54, 30, 0.3);
+}
+
+.problemInfo {
+  flex: 1;
+}
+
+.problemTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary, #ffffff);
+  margin: 0 0 4px;
+}
+
+.problemMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  flex-wrap: wrap;
+}
+
+.difficulty {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.difficulty.easy {
+  background: rgba(0, 175, 155, 0.2);
+  color: #00af9b;
+}
+
+.difficulty.medium {
+  background: rgba(255, 176, 0, 0.2);
+  color: #ffb000;
+}
+
+.difficulty.hard {
+  background: rgba(239, 71, 67, 0.2);
+  color: #ef4743;
+}
+
+.matchBadge {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #a0aec0);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.matchBadge.highConfidence {
+  color: #00af9b;
+}
+
+/* Match reason explanation */
+.matchReason {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
+  border-radius: 8px;
+  padding: var(--spacing-md, 16px);
+  border-left: 3px solid var(--accent-primary, #ffa116);
+}
+
+.matchReasonLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary, #718096);
+  margin-bottom: 4px;
+}
+
+.matchReasonText {
+  color: var(--text-primary, #ffffff);
+  font-weight: 500;
+}
+
+/* Encourage message */
+.encourageMessage {
+  text-align: center;
+  color: var(--text-secondary, #a0aec0);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.encourageMessage strong {
+  color: var(--text-primary, #ffffff);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: var(--spacing-md, 16px);
+  margin-top: var(--spacing-sm, 8px);
+}
+
+.primaryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: linear-gradient(135deg, #ffa116 0%, #ff8c00 100%);
+  color: #1a1a2e;
+  box-shadow: 0 4px 12px rgba(255, 161, 22, 0.3);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 161, 22, 0.4);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondaryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--text-primary, #ffffff);
+}
+
+.secondaryButton:hover {
+  background: var(--bg-hover, rgba(255, 255, 255, 0.05));
+  border-color: var(--border-hover, rgba(255, 255, 255, 0.2));
+}
+
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.skipButton {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--text-tertiary, #718096);
+}
+
+.skipButton:hover {
+  color: var(--text-secondary, #a0aec0);
+  background: var(--bg-hover, rgba(255, 255, 255, 0.03));
+}
+
+/* Icon styles */
+.icon {
+  font-size: 1.1rem;
+}
+
+/* Keyboard hint */
+.keyboardHint {
+  text-align: center;
+  margin-top: var(--spacing-sm, 8px);
+  color: var(--text-tertiary, #718096);
+  font-size: 0.75rem;
+}
+
+.keyboardHint kbd {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.1));
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  margin: 0 2px;
+}

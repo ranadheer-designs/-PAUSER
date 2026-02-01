@@ -1,0 +1,161 @@
+/**
+ * Pauser Design Tokens
+ *
+ * CSS custom properties based on the locked design language (theme.md).
+ * These tokens are the single source of truth for all visual styling.
+ *
+ * Usage: Import this file in your app's global CSS or entry point.
+ */
+
+:root {
+  /* ========================================================================
+     COLOR SYSTEM (Non-Negotiable)
+     ======================================================================== */
+
+  /* Backgrounds */
+  --color-bg-global: #0b0d0f;
+  --color-bg-surface: #0f1316;
+  --color-bg-secondary: #111418;
+
+  /* Brand Colors */
+  --color-primary: #3b4bd8; /* Deep indigo - focus color */
+  --color-accent: #22c3a6; /* Muted teal - success/active */
+  --color-highlight: #6e5af2; /* Interactive elements */
+  --color-error: #f06a6a;
+
+  /* Text Colors */
+  --color-text-primary: #e6eef8;
+  --color-text-secondary: #98a0b2;
+  --color-text-muted: #6f7a96;
+
+  /* ========================================================================
+     TYPOGRAPHY
+     ======================================================================== */
+
+  /* Font Families */
+  --font-family-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.8125rem; /* 13px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.25rem; /* 20px */
+  --font-size-xl: 1.75rem; /* 28px */
+  --font-size-2xl: 2rem; /* 32px */
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-base: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ========================================================================
+     SPACING SCALE
+     ======================================================================== */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* ========================================================================
+     BORDER RADIUS
+     ======================================================================== */
+
+  --radius-sm: 4px;
+  --radius-md: 8px; /* Cards */
+  --radius-lg: 14px; /* Modals/overlays */
+  --radius-full: 9999px;
+
+  /* ========================================================================
+     SHADOWS (Subtle & Restrained)
+     ======================================================================== */
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+  /* ========================================================================
+     TRANSITIONS
+     ======================================================================== */
+
+  /* Durations (per theme.md) */
+  --duration-micro: 120ms; /* Micro feedback */
+  --duration-fast: 180ms;
+  --duration-normal: 240ms;
+  --duration-slow: 360ms; /* Panels/modals */
+
+  /* Easings */
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ========================================================================
+     Z-INDEX SCALE
+     ======================================================================== */
+
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 300;
+  --z-popover: 400;
+  --z-toast: 500;
+  --z-overlay: 600;
+
+  /* ========================================================================
+     LAYOUT
+     ======================================================================== */
+
+  --max-width-content: 1400px;
+  --sidebar-width: 280px;
+  --header-height: 64px;
+
+  /* Heading Font - Default to Sans in Dark Mode */
+  --font-family-headings: var(--font-family-primary);
+  --font-family-serif: var(--font-instrument-serif), 'Times New Roman', serif;
+}
+
+/* ============================================================================
+   LIGHT MODE (The Thinking Environment)
+   ============================================================================ */
+
+[data-theme='light'] {
+  /* Backgrounds */
+  --color-bg-global: #F9F8F6; /* Warm off-white / parchment */
+  --color-bg-surface: rgba(255, 255, 255, 0.65); /* Glass / Translucent */
+  --color-bg-secondary: #F0EEE9; /* Slightly darker tonal variant */
+
+  /* Brand Colors */
+  --color-primary: #2D4F43; /* Deep desaturated green */
+  --color-accent: #8DA399; /* Muted sage / clay */
+  --color-highlight: #3D6B5A; /* Slightly lighter green for interaction */
+  
+  /* Text Colors */
+  --color-text-primary: #1A1D1E; /* Deep charcoal */
+  --color-text-secondary: #4A4F55; /* Softened dark gray */
+  --color-text-muted: #8C9196; /* Low-contrast reflective */
+
+  /* Borders */
+  --color-border-subtle: rgba(45, 79, 67, 0.08);
+
+  /* Typography */
+  --font-family-headings: var(--font-family-serif);
+
+  /* Motion - Slightly slower/calmer if possible, but tokens usually shared. 
+     We can override durations here if needed. 
+     User said: "Motion should feel organic... slight delays" */
+  --duration-fast: 220ms;
+  --duration-normal: 320ms;
+}

@@ -1,0 +1,329 @@
+/**
+ * DeepFocus Page Styles
+ * 
+ * Following Pauser Design Language:
+ * - Background: #0B0D0F
+ * - Minimal, focused, no clutter
+ * - Progress feels earned
+ */
+
+.main {
+  min-height: 100vh;
+  background-color: #0B0D0F;
+  color: #E6EEF8;
+  display: flex;
+  font-family: var(--font-inter, 'Inter', sans-serif);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.notesPanel {
+  width: 400px;
+  min-width: 400px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+}
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0B0D0F;
+  color: #6F7A96;
+}
+
+/* Header */
+.header {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.separator {
+  color: #2a2d31;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #98A0B2;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.dashboardButton {
+  background: rgba(42, 45, 49, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #98A0B2;
+  padding: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.dashboardButton:hover {
+  background: rgba(59, 75, 216, 0.1);
+  color: #E6EEF8;
+  border-color: rgba(59, 75, 216, 0.3);
+}
+
+.dashboardButton:active {
+  transform: scale(0.98);
+}
+
+.progress {
+  font-size: 13px;
+  color: #6F7A96;
+}
+
+/* Header Right Section */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Toggle Switch */
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.toggleText {
+  font-size: 13px;
+  color: #98A0B2;
+  font-weight: 500;
+  min-width: 90px;
+  text-align: right;
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #1a1d21;
+  border: 1px solid #2a2d31;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  padding: 0;
+}
+
+.toggle:hover:not(:disabled) {
+  border-color: #3a3d41;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid #3B4BD8;
+  outline-offset: 2px;
+}
+
+.toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: #6F7A96;
+  border-radius: 50%;
+  transition: all 200ms ease;
+}
+
+.toggleOn {
+  background-color: rgba(59, 75, 216, 0.2);
+  border-color: #3B4BD8;
+}
+
+.toggleOn .toggleThumb {
+  left: 22px;
+  background-color: #3B4BD8;
+}
+
+.toggleLoading .toggleThumb {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Player */
+.playerWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 16px;
+}
+
+/* Soft Nudge */
+.nudge {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(15, 19, 22, 0.95);
+  color: #98A0B2;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  animation: fadeInOut 3s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Timeline */
+.timeline {
+  width: 100%;
+  max-width: 1200px;
+  height: 4px;
+  background-color: #1a1d21;
+  border-radius: 2px;
+  position: relative;
+  overflow: visible;
+}
+
+.timelineProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #3B4BD8;
+  border-radius: 2px;
+  transition: width 250ms linear;
+}
+
+.timelineMax {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgba(59, 75, 216, 0.3);
+  border-radius: 2px;
+}
+
+.checkpointMarker {
+  position: absolute;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  background-color: #6F7A96;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  border: 2px solid #0B0D0F;
+  transition: background-color 200ms ease;
+}
+
+.checkpointMarker.completed {
+  background-color: #22C3A6;
+}
+
+/* Checkpoint marker colors by type */
+.checkpointMarker.markerPrediction {
+  background-color: #22C3A6;
+}
+
+.checkpointMarker.markerExplanation {
+  background-color: #6E5AF2;
+}
+
+.checkpointMarker.markerOneSentence {
+  background-color: #3B4BD8;
+}
+
+.checkpointMarker.markerPractice {
+  background-color: #ffa116; /* LeetCode orange */
+}
+
+.checkpointMarker.completed.markerPrediction,
+.checkpointMarker.completed.markerExplanation,
+.checkpointMarker.completed.markerOneSentence,
+.checkpointMarker.completed.markerPractice {
+  background-color: #22C3A6;
+  box-shadow: 0 0 8px rgba(34, 195, 166, 0.4);
+}
+
+/* Reveal indicator (for predictions) */
+.revealIndicator {
+  font-size: 12px;
+  color: #22C3A6;
+  background: rgba(34, 195, 166, 0.1);
+  border: 1px solid rgba(34, 195, 166, 0.3);
+  padding: 4px 10px;
+  border-radius: 12px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main {
+    flex-direction: column;
+  }
+  
+  .notesPanel {
+    width: 100%;
+    min-width: auto;
+    height: auto;
+    max-height: 50vh;
+    position: relative;
+  }
+}

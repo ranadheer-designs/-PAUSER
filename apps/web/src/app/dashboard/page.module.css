@@ -1,0 +1,93 @@
+/* Main Layout Wrapper */
+.layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0B0D0F;
+}
+
+/* Content Area (Right Side) */
+.container {
+  flex: 1;
+  max-width: 1400px; /* Increased for better use of space */
+  margin: 0 auto;
+  padding: 3rem 4rem; /* More horizontal padding */
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  padding-bottom: 0.1em;
+  /* Premium Text Gradient */
+  background: linear-gradient(to right, #ffffff, #a0a0a0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--color-foreground-muted);
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.emptyState {
+  padding: 5rem 2rem;
+  text-align: center;
+  /* Subtle glass container */
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: var(--color-foreground-muted);
+  font-size: 1.1rem;
+  
+  transition: background 0.3s ease;
+}
+
+.emptyState:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Content Area Container */
+.folderContent {
+  background: transparent;
+  padding: 0;
+  min-height: 300px;
+  overflow: visible;
+  margin-top: 2rem;
+}
+
+

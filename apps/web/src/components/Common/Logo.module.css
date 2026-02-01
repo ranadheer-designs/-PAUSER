@@ -1,0 +1,50 @@
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: var(--text-primary, #E6EEF8);
+  user-select: none;
+}
+
+.logoIcon {
+  height: 100%;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.logoTextAccent {
+  color: var(--color-primary, #3B4BD8);
+}
+
+/* Sizes */
+.small {
+  height: 18px;
+  gap: 8px;
+}
+.small .logoText {
+  font-size: 0.85rem;
+}
+
+.medium {
+  height: 24px;
+  gap: 12px;
+}
+.medium .logoText {
+  font-size: 1.1rem;
+}
+
+.large {
+  height: 32px;
+  gap: 16px;
+}
+.large .logoText {
+  font-size: 1.5rem;
+}
