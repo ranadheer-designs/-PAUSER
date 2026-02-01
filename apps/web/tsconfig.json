@@ -9,6 +9,15 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@pauser/common": [
+        "../../packages/common/src/index.ts"
+      ],
+      "@pauser/common/server": [
+        "../../packages/common/src/server.ts"
+      ],
+      "@pauser/ui": [
+        "../../packages/ui/src/index.ts"
       ]
     },
     "jsx": "preserve",
