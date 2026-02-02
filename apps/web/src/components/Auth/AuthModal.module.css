@@ -189,3 +189,55 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #111418;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #E6EEF8;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 180ms ease;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+.googleButton:hover:not(:disabled) {
+  background: #181C21;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.googleButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.divider span {
+  font-size: 12px;
+  color: #6F7A96;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+

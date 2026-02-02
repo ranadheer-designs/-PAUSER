@@ -10,6 +10,7 @@ import { FlashcardsSection } from '@/components/Dashboard/FlashcardsSection';
 import { AutoSync } from '@/components/Dashboard/AutoSync';
 import { StreakMap } from '@/components/Dashboard/StreakMap';
 import { Sidebar } from '@/components/Navigation/Sidebar';
+import { ProtectedRoute } from '@/components/Auth/ProtectedRoute';
 import styles from './page.module.css';
 
 type Tab = 'videos' | 'notes' | 'artifacts' | 'flashcards';
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>('videos');
 
   return (
+    <ProtectedRoute>
     <div className={styles.layout}>
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
@@ -62,5 +64,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

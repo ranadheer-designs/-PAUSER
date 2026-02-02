@@ -26,6 +26,7 @@ import { parseUrlTimestamp } from '@/lib/player/PlayerController';
 import { generateCheckpoints } from '@/actions/checkpoints';
 import { getCheckpointsByVideoId, saveCheckpoints, getContentIdByVideoId } from '@/actions/checkpointActions';
 import { saveAttempt } from '@/actions/analytics';
+import { ProtectedRoute } from '@/components/Auth/ProtectedRoute';
 import styles from './page.module.css';
 
 interface PageProps {
@@ -366,6 +367,7 @@ export default function DeepFocusPage({ params }: PageProps) {
   };
 
   return (
+    <ProtectedRoute>
     <main className={styles.main}>
       <div className={styles.content}>
         {/* Header */}
@@ -507,5 +509,6 @@ export default function DeepFocusPage({ params }: PageProps) {
         />
       )}
     </main>
+    </ProtectedRoute>
   );
 }
