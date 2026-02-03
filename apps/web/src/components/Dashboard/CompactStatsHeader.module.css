@@ -2,49 +2,33 @@
 
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 24px;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 8px; /* Tighter gap */
+  margin-bottom: 0;
 }
 
 .statsCard {
-  background: #14171c;
-  border-radius: 16px;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.03); /* Lighter/Subtler bg for sticky header context */
+  border-radius: 12px; /* Slightly smaller radius */
+  padding: 10px 12px; /* Reduced padding */
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100px;
-  position: relative;
-  overflow: hidden;
+  flex-direction: row; /* Horizontal layout to save vertical space */
+  align-items: center;
+  gap: 10px;
+  min-height: auto; /* Remove fixed height */
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, background 0.2s;
 }
 
-.statsCard:active {
-  transform: scale(0.98);
-  background: #1a1d21;
-}
-
-/* Specific Card Styles */
-.streakCard {
-  background: linear-gradient(145deg, #14171c, #0B0D0F);
-}
-
-.checkpointsCard {
-  background: linear-gradient(145deg, #14171c, #0B0D0F);
-}
-
-/* Icon Wrappers */
+/* Icon Wrappers - Smaller */
 .iconWrapperFlame, .iconWrapperCheck {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 0; /* Align with text */
+  flex-shrink: 0;
 }
 
 .iconWrapperFlame {
@@ -57,27 +41,30 @@
   color: #10b981;
 }
 
-/* Typography */
+/* Typography - Compact */
+.statsContent {
+  display: flex;
+  flex-direction: column;
+}
+
 .statsValue {
-  font-size: 24px;
+  font-size: 16px; /* Smaller font */
   font-weight: 700;
   color: #E6EEF8;
   line-height: 1.1;
-  letter-spacing: -0.02em;
 }
 
 .statsGoal {
-  font-size: 14px;
+  font-size: 11px;
   color: #6F7A96;
   font-weight: 500;
-  margin-left: 2px;
 }
 
 .statsLabel {
-  font-size: 12px;
+  font-size: 10px;
   color: #9CA3AF;
   font-weight: 500;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 /* Progress bar inside the card */
@@ -85,23 +72,13 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 3px;
+  height: 2px;
   background: #10b981;
   opacity: 0.6;
-  border-radius: 0 2px 2px 0;
-  box-shadow: 0 -1px 4px rgba(16, 185, 129, 0.4);
 }
 
-/* Skeleton Loading */
 .skeleton {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  height: 100px;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.5; }
+  border-radius: 12px;
+  height: 48px;
 }

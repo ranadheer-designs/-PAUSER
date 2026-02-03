@@ -27,9 +27,20 @@ export default function DashboardPage() {
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
       
       <div className={styles.container}>
-        {/* Mobile Header with Pauser branding */}
-        <div className={styles.mobileHeader}>
-          <Logo size="small" />
+        {/* Sticky Mobile Header (Branding + Stats) */}
+        <div className={styles.mobileTopBar}>
+          <div className={styles.mobileHeader}>
+            <Logo size="small" />
+          </div>
+
+          <div className={styles.mobileStatsWrapper}>
+            <CompactStatsHeader 
+              streak={streak}
+              checkpointsCompleted={checkpointsCompletedToday}
+              checkpointsGoal={10}
+              loading={false} /* Force static loading state as requested */
+            />
+          </div>
         </div>
 
         <header className={styles.header}>
@@ -38,16 +49,6 @@ export default function DashboardPage() {
             <p className={styles.subtitle}>Consistency over intensity.</p>
           </div>
         </header>
-
-        {/* Compact Header for Mobile (Sticky) */}
-        <div className={styles.mobileStatsWrapper}>
-          <CompactStatsHeader 
-            streak={streak}
-            checkpointsCompleted={checkpointsCompletedToday}
-            checkpointsGoal={10}
-            loading={loading}
-          />
-        </div>
         
         {/* Auto-sync notes in background */}
         <AutoSync />
