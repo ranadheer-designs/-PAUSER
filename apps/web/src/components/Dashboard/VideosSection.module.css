@@ -753,6 +753,11 @@
     border: 1px solid rgba(255,255,255,0.05);
   }
 
+  /* Single item should take full width to avoid looking broken */
+  .gridContainer .card:only-child {
+    min-width: calc(100% - 4px);
+  }
+
   .card .thumbnailWrapper {
     padding-bottom: 56.25%; 
     border-bottom: 1px solid rgba(255,255,255,0.05);
