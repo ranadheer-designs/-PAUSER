@@ -1,28 +1,33 @@
 /* CompactStatsHeader.module.css */
 
 .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns */
-  gap: 8px; /* Tighter gap */
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 0;
 }
 
 .statsCard {
   background: rgba(255, 255, 255, 0.03); /* Lighter/Subtler bg for sticky header context */
-  border-radius: 12px; /* Slightly smaller radius */
-  padding: 10px 12px; /* Reduced padding */
+  border-radius: 10px;
+  padding: 6px 10px; /* Highly compact */
   display: flex;
-  flex-direction: row; /* Horizontal layout to save vertical space */
+  flex-direction: row; 
   align-items: center;
-  gap: 10px;
-  min-height: auto; /* Remove fixed height */
+  gap: 8px;
+  min-height: auto; 
   border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.statsCard:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* Icon Wrappers - Smaller */
 .iconWrapperFlame, .iconWrapperCheck {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -61,10 +66,7 @@
 }
 
 .statsLabel {
-  font-size: 10px;
-  color: #9CA3AF;
-  font-weight: 500;
-  margin-top: 1px;
+  display: none; /* Hide label for compact header */
 }
 
 /* Progress bar inside the card */
