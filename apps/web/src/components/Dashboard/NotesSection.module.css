@@ -516,3 +516,162 @@
   text-align: center;
 }
 
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .searchInput {
+    max-width: 100%;
+    padding: 12px; /* Larger touch target */
+    font-size: 14px;
+  }
+
+  .viewToggle {
+    align-self: flex-start;
+  }
+
+  /* Grid View Mobile */
+  .gridContainer {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding-bottom: 24px;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .cardThumbnail {
+    width: 60px;
+    height: 34px;
+  }
+
+  .cardBody {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    margin-bottom: 8px;
+  }
+  
+  /* Always show delete on mobile grid */
+  .card .deleteBtn {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.05);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  /* List View Mobile */
+  .row {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background-color: #0B0D0F;
+    border: 1px solid #1a1d21;
+    margin-bottom: 8px;
+    height: auto;
+  }
+
+  .thumbnail {
+    display: block; /* Show thumbnail */
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+  }
+
+  .icon {
+    display: none;
+  }
+
+  .noteBody {
+    font-size: 14px;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+
+  .metaInfo {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .videoTitle {
+    max-width: none;
+  }
+  
+  /* Always show delete on mobile list */
+  .row .deleteBtn {
+    opacity: 1;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  /* Empty State Mobile */
+  .emptyState, .loading, .error {
+    padding: 32px 16px;
+  }
+
+  .emptyTitle {
+    font-size: 18px;
+  }
+
+  .emptyDesc {
+    font-size: 14px;
+  }
+
+  .addVideoBtn {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 14px;
+  }
+
+  .cardHeader {
+    gap: 10px;
+  }
+
+  .cardThumbnail {
+    width: 50px;
+    height: 28px;
+  }
+
+  .toggleBtn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .row {
+    padding: 12px;
+  }
+
+  .cardNoteItem {
+    padding: 10px;
+  }
+
+  .cardNoteBody {
+    font-size: 13px;
+  }
+}

@@ -34,6 +34,9 @@ export interface NotesPanelProps {
   onNoteDelete?: (noteId: string) => Promise<void>;
   onEditingChange?: (isEditing: boolean) => void; // Called when editing state changes
   triggerTakeNoteRef?: React.MutableRefObject<(() => void) | null>; // Ref to programmatically trigger note-taking
+  checkpointsEnabled?: boolean;
+  onToggleCheckpoints?: () => void;
+  isCheckpointsPending?: boolean;
 }
 
 type ViewMode = 'raw' | 'organized';
@@ -49,6 +52,9 @@ export function NotesPanel({
   onNoteDelete,
   onEditingChange,
   triggerTakeNoteRef,
+  checkpointsEnabled = false,
+  onToggleCheckpoints,
+  isCheckpointsPending = false,
 }: NotesPanelProps) {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState(getSyncState());
@@ -154,7 +160,20 @@ export function NotesPanel({
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Notes</h2>
+        <div className={styles.headerLeft}>
+          <h2 className={styles.title}>Notes</h2>
+          {onToggleCheckpoints && (
+            <button 
+              className={`${styles.checkpointToggle} ${checkpointsEnabled ? styles.active : ''}`}
+              onClick={onToggleCheckpoints}
+              disabled={isCheckpointsPending}
+              title={checkpointsEnabled ? 'Disable Cognitive Checkpoints' : 'Enable Cognitive Checkpoints'}
+            >
+              <span className={styles.toggleIcon} />
+              {isCheckpointsPending ? '...' : (checkpointsEnabled ? 'Brain Active' : 'Enable Brain')}
+            </button>
+          )}
+        </div>
         <div className={styles.syncStatus}>
           {syncStatus.isSyncing && (
             <span className={styles.syncing}>Syncing...</span>

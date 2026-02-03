@@ -1,0 +1,107 @@
+/* CompactStatsHeader.module.css */
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.statsCard {
+  background: #14171c;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.statsCard:active {
+  transform: scale(0.98);
+  background: #1a1d21;
+}
+
+/* Specific Card Styles */
+.streakCard {
+  background: linear-gradient(145deg, #14171c, #0B0D0F);
+}
+
+.checkpointsCard {
+  background: linear-gradient(145deg, #14171c, #0B0D0F);
+}
+
+/* Icon Wrappers */
+.iconWrapperFlame, .iconWrapperCheck {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.iconWrapperFlame {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.iconWrapperCheck {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+/* Typography */
+.statsValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #E6EEF8;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.statsGoal {
+  font-size: 14px;
+  color: #6F7A96;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.statsLabel {
+  font-size: 12px;
+  color: #9CA3AF;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Progress bar inside the card */
+.cardProgress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #10b981;
+  opacity: 0.6;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 -1px 4px rgba(16, 185, 129, 0.4);
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  height: 100px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}

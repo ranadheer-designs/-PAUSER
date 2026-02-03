@@ -156,3 +156,58 @@
 .submitButton:active {
   transform: scale(0.98);
 }
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .input {
+    padding: 0.875rem 1rem;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .submitButton {
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+  }
+
+  .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+}
+

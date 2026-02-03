@@ -112,9 +112,23 @@ async function getOrCreateContentId(
     .maybeSingle();
   
   if (existingContent) {
+    // If metadata is provided, update the existing record
+    if (metadata?.title) {
+        // Cast to any to bypass strict table typing issues
+        const _supabase = supabase as any;
+        await _supabase
+            .from('contents')
+            .update({
+                title: metadata.title,
+                description: metadata.description || null,
+                thumbnail_url: metadata.thumbnailUrl || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+            })
+            .eq('id', (existingContent as any).id);
+    }
     return (existingContent as any).id;
   }
   
+  // @ts-ignore
   const { data: newContent, error } = await supabase
     .from('contents')
     .insert({
@@ -134,6 +148,17 @@ async function getOrCreateContentId(
   }
   
   return (newContent as any).id;
+}
+
+/**
+ * Update video metadata (title, description, etc.)
+ * Useful for correcting fallback titles.
+ */
+export async function updateVideoMetadata(
+  videoId: string, 
+  metadata: { title: string; description?: string; thumbnailUrl?: string }
+): Promise<void> {
+    await getOrCreateContentId(videoId, metadata);
 }
 
 // ============================================================================

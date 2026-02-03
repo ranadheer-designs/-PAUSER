@@ -232,4 +232,51 @@
     padding: 8px 14px;
     font-size: 0.85rem;
   }
+
+  .contentContainer {
+    padding: 0 16px;
+  }
+
+  .inputGroup {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .inputWrapper {
+    width: 100%;
+  }
+
+  .inputField {
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .buttonPrimary {
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  .subtitle {
+    margin: 20px 0 32px;
+  }
+
+  .microCopy {
+    margin-top: 16px;
+  }
+
+  .heroSection {
+    padding: 60px 0;
+  }
 }
+
+/* Tablet adjustments */
+@media (max-width: 768px) and (min-width: 641px) {
+  .inputGroup {
+    max-width: 500px;
+  }
+
+  .navHeader {
+    padding: 14px 24px;
+  }
+}
+

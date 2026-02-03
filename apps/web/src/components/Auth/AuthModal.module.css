@@ -241,3 +241,85 @@
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+  .overlay {
+    background: #0F1316; /* Solid background for immersive feel */
+    align-items: flex-end; /* Bottom sheet feeling (optional) or center */
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: none;
+    height: 100%; /* Full screen */
+    border-radius: 0;
+    border: none;
+    padding: 24px;
+    padding-top: calc(24px + env(safe-area-inset-top));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: none;
+  }
+
+  /* Close button prominent */
+  .closeButton {
+    top: max(20px, env(safe-area-inset-top));
+    right: 20px;
+    font-size: 32px;
+    background: rgba(255, 255, 255, 0.05);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .title {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .tabs {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px;
+    border-radius: 12px;
+    border: none;
+  }
+  
+  .tab, .tabActive {
+    border-radius: 8px;
+    border-bottom: none;
+    padding: 10px;
+  }
+
+  .tabActive {
+    background: rgba(255, 255, 255, 0.1);
+    color: #E6EEF8;
+  }
+
+  .field input {
+    font-size: 16px; /* Prevent zoom */
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .submitButton {
+    padding: 16px;
+    font-size: 16px;
+    margin-top: 12px;
+  }
+
+  .googleButton {
+    padding: 16px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 20px;
+  }
+}

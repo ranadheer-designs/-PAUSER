@@ -86,3 +86,57 @@
   border-radius: 12px;
   border: 1px solid var(--border);
 }
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    border-radius: 16px;
+    min-width: 220px; /* Wider for scroll */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .header {
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-size: 0.7rem;
+    opacity: 0.8;
+  }
+
+  .legend {
+    display: none; /* Hide legend on mobile to save space */
+  }
+
+  .mapGrid {
+    gap: 3px;
+  }
+
+  .square {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.875rem;
+    min-width: 180px;
+  }
+
+  .square {
+    width: 8px;
+    height: 8px;
+  }
+}
+

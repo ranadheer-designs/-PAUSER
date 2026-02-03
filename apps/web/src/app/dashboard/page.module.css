@@ -43,11 +43,16 @@
   line-height: 1.6;
 }
 
-.grid {
+.statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
+}
+
+.mobileStatsWrapper {
+  display: none;
+  margin-bottom: 1rem;
 }
 
 .section {
@@ -81,7 +86,6 @@
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Content Area Container */
 .folderContent {
   background: transparent;
   padding: 0;
@@ -90,4 +94,121 @@
   margin-top: 2rem;
 }
 
+/* Mobile Tab Bar - Fixed bottom navigation for mobile */
+.mobileTabBar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  gap: 0;
+  background: rgba(15, 19, 22, 0.98);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 0;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* iOS safe area */
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
 
+.mobileTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: #6F7A96;
+  font-size: 11px; /* Increased font size */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 0;
+  white-space: nowrap;
+  position: relative;
+}
+
+.mobileTab svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  width: 24px; /* Larger icons */
+  height: 24px;
+}
+
+.mobileTab:active svg {
+  transform: scale(0.9);
+}
+
+.mobileTabActive {
+  color: #3B4BD8;
+}
+
+.mobileTabActive svg {
+  color: #3B4BD8;
+  filter: drop-shadow(0 0 8px rgba(59, 75, 216, 0.4));
+}
+
+.mobileTabActive::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: #3B4BD8;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(59, 75, 216, 0.5);
+}
+
+.mobileTabActive:hover {
+  color: #3B4BD8;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Tablet Breakpoint */
+@media (max-width: 1024px) {
+  /* ... */
+}
+
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  /* Show mobile tab bar on mobile */
+  .mobileTabBar {
+    display: flex;
+  }
+  
+
+
+  /* Hide Desktop/Cards elements */
+  .statsGrid {
+    display: none;
+  }
+  .header {
+    display: none;
+  }
+
+  .container {
+    padding: 1rem; /* standard padding */
+    padding-bottom: 90px;
+    height: auto;
+    min-height: 100vh;
+    padding-top: 0; 
+  }
+  
+  .mobileStatsWrapper {
+    display: block;
+    margin-bottom: 24px;
+    /* No negative margin here, we want it contained but clean */
+  }
+}

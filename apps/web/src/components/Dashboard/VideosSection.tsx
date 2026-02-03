@@ -22,6 +22,7 @@ export function VideosSection() {
   const [showAddVideoModal, setShowAddVideoModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'today' | 'week' | 'month' | 'older'>('all');
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   // Helper function to categorize videos by date
   const getDateCategory = (dateString: string): 'today' | 'week' | 'month' | 'older' => {
@@ -122,7 +123,97 @@ export function VideosSection() {
   return (
     <>
       <div>
-        {/* Controls */}
+        {/* Mobile Controls */}
+        <div className={styles.mobileControls}>
+           {!isMobileSearchOpen ? (
+             <div className={styles.mobileActionsRow}>
+                <button 
+                  className={styles.mobileAddBtn} 
+                  onClick={() => setShowAddVideoModal(true)}
+                >
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                     <line x1="12" y1="5" x2="12" y2="19" />
+                     <line x1="5" y1="12" x2="19" y2="12" />
+                   </svg>
+                   Add Video
+                </button>
+                <button 
+                  className={styles.mobileSearchTrigger} 
+                  onClick={() => setIsMobileSearchOpen(true)}
+                  aria-label="Search and Filters"
+                >
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                   </svg>
+                </button>
+             </div>
+           ) : (
+             <div className={styles.mobileSearchContainer}>
+                <div className={styles.mobileSearchInputWrapper}>
+                  <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input
+                    type="text"
+                    className={styles.searchInput}
+                    placeholder="Search videos..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                  />
+                  <button 
+                    className={styles.mobileCloseSearch} 
+                    onClick={() => setIsMobileSearchOpen(false)}
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className={styles.mobileFiltersRow}>
+                   <select
+                    className={styles.categorySelect}
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value as 'all' | 'today' | 'week' | 'month' | 'older')}
+                  >
+                    <option value="all">All Videos</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="older">Older</option>
+                  </select>
+                  
+                  <div className={styles.toggleGroup}>
+                    <button 
+                      className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.active : ''}`}
+                      onClick={() => setViewMode('grid')}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                      </svg>
+                    </button>
+                    <button 
+                      className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.active : ''}`}
+                      onClick={() => setViewMode('list')}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6" />
+                        <line x1="8" y1="12" x2="21" y2="12" />
+                        <line x1="8" y1="18" x2="21" y2="18" />
+                        <line x1="3" y1="6" x2="3.01" y2="6" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+             </div>
+           )}
+        </div>
+
+        {/* Desktop Controls (Hidden on Mobile) */}
         <div className={styles.headerControls}>
           <button 
             className={styles.addVideoBtnSmall}

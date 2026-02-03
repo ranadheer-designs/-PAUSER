@@ -346,3 +346,171 @@
   color: #98A0B2;
   margin-bottom: 32px;
 }
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Tablet Breakpoint */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .featureSection {
+    padding: 80px 0;
+  }
+
+  .featureGrid {
+    gap: 40px;
+  }
+
+  .featureVisual {
+    height: 400px;
+  }
+
+  .contactGrid {
+    gap: 60px;
+  }
+}
+
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+  .heroSection {
+    min-height: auto;
+    padding: 120px 0 80px;
+  }
+
+  .heroContent {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .title {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: 32px;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .buttonPrimary,
+  .buttonGhost {
+    width: 100%;
+    padding: 14px 24px;
+    text-align: center;
+  }
+
+  .featureSection {
+    min-height: auto;
+    padding: 60px 0;
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .featureContent {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .featureTitle {
+    font-size: 1.75rem;
+    margin-bottom: 16px;
+  }
+
+  .featureText {
+    font-size: 1rem;
+  }
+
+  .featureVisual {
+    height: 300px;
+    order: -1; /* Image above content on mobile */
+  }
+
+  .glow {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Contact Section Mobile */
+  .contactSection {
+    padding: 60px 0;
+  }
+
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .contactInfo {
+    max-width: 100%;
+  }
+
+  .contactTitle {
+    font-size: 2rem;
+  }
+
+  .contactForm {
+    padding: 24px;
+    border-radius: 16px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .formInput,
+  .formTextarea {
+    padding: 12px 14px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .submitButton {
+    padding: 14px;
+  }
+
+  .successMessage {
+    padding: 40px 24px;
+  }
+
+  /* Footer Mobile */
+  .footer {
+    padding: 40px 0;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .heroSection {
+    padding-top: 100px;
+  }
+
+  .featureTitle {
+    font-size: 1.5rem;
+  }
+
+  .contactTitle {
+    font-size: 1.75rem;
+  }
+
+  .contactForm {
+    padding: 20px;
+  }
+}

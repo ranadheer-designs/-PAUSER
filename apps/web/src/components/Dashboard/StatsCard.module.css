@@ -249,3 +249,60 @@
 .card:not(.loading) .value {
   animation: fadeInUp 0.36s ease-out;
 }
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS (Mobile Widget Style)
+   ======================================== */
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+    min-height: 100px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .content {
+    align-items: flex-start;
+  }
+
+  .value {
+    font-size: 1.75rem;
+    margin-top: 0.125rem;
+    letter-spacing: -0.04em;
+  }
+
+  .label {
+    font-size: 0.65rem;
+    opacity: 0.8;
+    margin-bottom: auto;
+  }
+
+  .subtext {
+    font-size: 0.7rem;
+    margin-top: 0.25rem;
+    opacity: 0.6;
+  }
+  
+  /* Progress ring adjustments */
+  .progressWrapper {
+    transform: scale(0.9);
+    margin-right: -4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 0.875rem;
+    min-height: 90px;
+  }
+
+  .value {
+    font-size: 1.5rem;
+  }
+}
+

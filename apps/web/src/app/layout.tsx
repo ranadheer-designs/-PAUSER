@@ -27,6 +27,11 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "Pauser | Deep Focus Learning",
   description: "Transform generic video content into active learning experiences.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

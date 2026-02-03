@@ -64,6 +64,17 @@ export default function DeepFocusPage({ params }: PageProps) {
           setVideoTitle(data.title || '');
           setVideoDescription(data.description || '');
           console.log(`[DeepFocus] Loaded video: "${data.title}"`);
+          
+          // Auto-update metadata in DB to fix any fallback titles
+          if (data.title) {
+            import('@/actions/checkpointActions').then(({ updateVideoMetadata }) => {
+              updateVideoMetadata(videoId, {
+                title: data.title,
+                description: data.description,
+                thumbnailUrl: data.thumbnailUrl
+              }).catch(e => console.warn('Background metadata update failed', e));
+            });
+          }
         }
       } catch (error) {
         console.warn('[DeepFocus] Failed to fetch video info:', error);
@@ -498,6 +509,9 @@ export default function DeepFocusPage({ params }: PageProps) {
           onNoteComplete={handleNoteComplete}
           onEditingChange={setIsEditingNote}
           triggerTakeNoteRef={triggerTakeNoteRef}
+          checkpointsEnabled={checkpointsEnabled}
+          onToggleCheckpoints={handleCheckpointToggle}
+          isCheckpointsPending={isPending}
         />
       </aside>
 

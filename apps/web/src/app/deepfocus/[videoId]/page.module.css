@@ -326,4 +326,76 @@
     max-height: 50vh;
     position: relative;
   }
+
+  .content {
+    padding: 20px;
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }
+
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+    height: 100vh; /* Fixed height for app-feel */
+    overflow: hidden;
+  }
+
+  .header {
+    display: none; /* Hide header on mobile to focus on video */
+  }
+  
+  /* Sticky Video Player */
+  .playerWrapper {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    background: #000;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .content {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    /* content should shrink to fit video player on mobile */
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  /* Notes Panel becomes the main scrollable specific content */
+  .notesPanel {
+    width: 100%;
+    min-width: auto;
+    height: auto;
+    max-height: none;
+    flex: 1;
+    overflow-y: auto; /* Internal scroll */
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    padding-bottom: 20px; /* Space for bottom nav */
+  }
+
+  .nudge {
+    font-size: 12px;
+    padding: 8px 16px;
+    bottom: 80px; /* Above bottom sheet/nav */
+    width: auto;
+    max-width: 90%;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .nudge {
+    bottom: 20px;
+  }
+}
+
