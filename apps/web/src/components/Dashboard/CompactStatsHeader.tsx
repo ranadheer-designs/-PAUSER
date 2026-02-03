@@ -39,8 +39,7 @@ export function CompactStatsHeader({
            </svg>
         </div>
         <div className={styles.statsContent}>
-          <div className={styles.statsValue}>{streak}</div>
-          <div className={styles.statsLabel}>Day Streak</div>
+          <div className={styles.statsValue}>{streak ?? 0}</div>
         </div>
       </div>
 
@@ -53,10 +52,9 @@ export function CompactStatsHeader({
         </div>
         <div className={styles.statsContent}>
           <div className={styles.statsValue}>
-             {checkpointsCompleted}
+             {checkpointsCompleted ?? 0}
              <span className={styles.statsGoal}>/{checkpointsGoal}</span>
           </div>
-          <div className={styles.statsLabel}>Checkpoints</div>
         </div>
         
         <div className={styles.cardProgress} style={{ width: `${progressPercent}%` }} />
