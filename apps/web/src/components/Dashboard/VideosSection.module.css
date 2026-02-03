@@ -1046,57 +1046,102 @@
     cursor: pointer;
   }
 
-  .mobileFiltersRow {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  /* Override existing selectors within mobileFiltersRow */
+  /* Replace Select with Pills */
   .mobileFiltersRow .categorySelect {
-    width: 100%;
-    height: 44px;
-    background: #0B0D0F;
-    border-color: rgba(255, 255, 255, 0.1);
+    display: none; /* Hide legacy select */
   }
 
-  .mobileFiltersRow .toggleGroup {
-    width: 100%;
-    justify-content: center;
+  .categoryPills {
+    display: flex;
+    overflow-x: auto;
     gap: 8px;
-    background: #0B0D0F;
-    border-color: rgba(255, 255, 255, 0.1);
-    padding: 4px;
+    padding: 4px 0;
+    margin-bottom: 8px;
+    scrollbar-width: none; /* Hide scrollbar */
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .mobileFiltersRow .toggleBtn {
-    flex: 1;
-    height: 36px;
+  .categoryPills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #6F7A96;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .pill.active {
+    background: #3B4BD8;
+    color: white;
+    border-color: #3B4BD8;
+    box-shadow: 0 2px 8px rgba(59, 75, 216, 0.3);
+  }
+
+  .pill:active {
+    transform: scale(0.95);
+  }
+
+  /* Floating Action Button (FAB) */
+  .mobileAddBtn {
+    display: none; /* Hide the old static button */
+  }
+
+  .fabBtn {
+    position: fixed;
+    bottom: 90px; /* Above tab bar */
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #3B4BD8, #5b6de8);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(59, 75, 216, 0.4);
+    z-index: 100;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .fabBtn:active {
+    transform: scale(0.9);
+  }
+
+  .fabBtn svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Refined Search Trigger */
+  .mobileActionsRow {
+    justify-content: flex-end; /* Align search to right since FAB is separate */
+  }
+
+  .mobileSearchTrigger {
+    background: transparent;
+    border: none;
+    color: #E6EEF8;
+    width: 44px;
+    height: 44px;
   }
 }
 
 /* Small Mobile */
 @media (max-width: 480px) {
-  .headerControls {
-    gap: 10px;
-  }
-
-  .searchInput {
-    font-size: 14px;
-    padding: 10px 36px 10px 38px;
-  }
-
-
-  .categorySelect {
-    font-size: 14px;
-  }
-
-  .card .textColumn {
-    padding: 12px;
-  }
-
-  .row {
-    padding: 10px;
+  .fabBtn {
+    bottom: 85px;
+    width: 50px;
+    height: 50px;
   }
 }
 

@@ -5,12 +5,21 @@
  * Supports Grid and List views.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { getVideosWithCheckpoints, type VideoWithCheckpoints } from '@/actions/getVideosWithCheckpoints';
 import { deleteVideoContent } from '@/actions/deleteVideoContent';
 import { AddVideoModal } from './AddVideoModal';
 import styles from './VideosSection.module.css';
+
+const CATEGORIES = [
+  { id: 'all', label: 'All' },
+  { id: 'today', label: 'Today' },
+  { id: 'week', label: 'This Week' },
+  { id: 'month', label: 'This Month' },
+  { id: 'older', label: 'Older' }
+];
 
 export function VideosSection() {
   const router = useRouter();
@@ -122,39 +131,33 @@ export function VideosSection() {
 
   return (
     <>
-      <div>
+
+      <div style={{ position: 'relative', minHeight: '80vh' }}>
         {/* Mobile Controls */}
         <div className={styles.mobileControls}>
            {!isMobileSearchOpen ? (
              <div className={styles.mobileActionsRow}>
-                <button 
-                  className={styles.mobileAddBtn} 
-                  onClick={() => setShowAddVideoModal(true)}
-                >
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                     <line x1="12" y1="5" x2="12" y2="19" />
-                     <line x1="5" y1="12" x2="19" y2="12" />
-                   </svg>
-                   Add Video
-                </button>
+                {/* Search Trigger (Top Right) */}
                 <button 
                   className={styles.mobileSearchTrigger} 
                   onClick={() => setIsMobileSearchOpen(true)}
-                  aria-label="Search and Filters"
+                  aria-label="Search"
                 >
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="11" cy="11" r="8" />
                       <line x1="21" y1="21" x2="16.65" y2="16.65" />
                    </svg>
                 </button>
              </div>
            ) : (
-             <div className={styles.mobileSearchContainer}>
+             <motion.div 
+               initial={{ opacity: 0, y: -10 }}
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -10 }}
+               className={styles.mobileSearchContainer}
+             >
                 <div className={styles.mobileSearchInputWrapper}>
-                  <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
+                  {/* ... standard search input ... */}
                   <input
                     type="text"
                     className={styles.searchInput}
@@ -163,57 +166,54 @@ export function VideosSection() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     autoFocus
                   />
-                  <button 
-                    className={styles.mobileCloseSearch} 
-                    onClick={() => setIsMobileSearchOpen(false)}
-                  >
-                    ×
-                  </button>
+                  <button className={styles.mobileCloseSearch} onClick={() => setIsMobileSearchOpen(false)}>×</button>
                 </div>
                 
                 <div className={styles.mobileFiltersRow}>
-                   <select
-                    className={styles.categorySelect}
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value as 'all' | 'today' | 'week' | 'month' | 'older')}
-                  >
-                    <option value="all">All Videos</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                    <option value="older">Older</option>
-                  </select>
-                  
-                  <div className={styles.toggleGroup}>
-                    <button 
-                      className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.active : ''}`}
-                      onClick={() => setViewMode('grid')}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
-                      </svg>
-                    </button>
-                    <button 
-                      className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.active : ''}`}
-                      onClick={() => setViewMode('list')}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="8" y1="6" x2="21" y2="6" />
-                        <line x1="8" y1="12" x2="21" y2="12" />
-                        <line x1="8" y1="18" x2="21" y2="18" />
-                        <line x1="3" y1="6" x2="3.01" y2="6" />
-                      </svg>
-                    </button>
-                  </div>
+                   {/* Horizontal Pills */}
+                   <div className={styles.categoryPills}>
+                     {CATEGORIES.map(cat => (
+                       <button
+                         key={cat.id}
+                         className={`${styles.pill} ${selectedCategory === cat.id ? styles.active : ''}`}
+                         onClick={() => setSelectedCategory(cat.id as any)}
+                       >
+                         {cat.label}
+                       </button>
+                     ))}
+                   </div>
+                   
+                   {/* Toggle Group */}
+                   <div className={styles.toggleGroup}>
+                     <button className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.active : ''}`} onClick={() => setViewMode('grid')}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                     </button>
+                     <button className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.active : ''}`} onClick={() => setViewMode('list')}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                     </button>
+                   </div>
                 </div>
-             </div>
+             </motion.div>
            )}
         </div>
 
-        {/* Desktop Controls (Hidden on Mobile) */}
+        {/* Floating Action Button (Mobile Only) */}
+        {!isMobileSearchOpen && (
+          <motion.button
+            className={styles.fabBtn}
+            onClick={() => setShowAddVideoModal(true)}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+               <line x1="12" y1="5" x2="12" y2="19" />
+               <line x1="5" y1="12" x2="19" y2="12" />
+             </svg>
+          </motion.button>
+        )}
+
+        {/* Desktop Controls (Keep strict hidden on mobile via CSS) */}
         <div className={styles.headerControls}>
           <button 
             className={styles.addVideoBtnSmall}
@@ -306,9 +306,19 @@ export function VideosSection() {
           </div>
         )}
 
-        <div className={viewMode === 'grid' ? styles.gridContainer : styles.listContainer}>
+        <motion.div 
+          className={viewMode === 'grid' ? styles.gridContainer : styles.listContainer}
+          layout
+        >
+          <AnimatePresence mode='popLayout'>
           {filteredVideos.length === 0 ? (
-            <div className={styles.noResults}>
+            // ... (keep no results logic same, just wrapped)
+            <motion.div 
+              className={styles.noResults}
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -317,9 +327,15 @@ export function VideosSection() {
               <button className={styles.clearFiltersBtn} onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}>
                 Clear filters
               </button>
-            </div>
+            </motion.div>
           ) : filteredVideos.map(video => (
-            <div 
+            <motion.div 
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
               key={video.id} 
               className={viewMode === 'grid' ? styles.card : styles.row}
               onClick={() => router.push(`/deepfocus/${video.externalId}`)}
@@ -410,9 +426,10 @@ export function VideosSection() {
                   </div>
                 </>
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
+          </AnimatePresence>
+        </motion.div>
       </div>
       <AddVideoModal isOpen={showAddVideoModal} onClose={() => setShowAddVideoModal(false)} />
       
