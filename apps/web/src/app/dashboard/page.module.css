@@ -89,9 +89,11 @@
 .folderContent {
   background: transparent;
   padding: 0;
-  min-height: 300px;
+  min-height: 60vh; /* Ensure tab switching doesn't collapse the page height significantly on mobile */
   overflow: visible;
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Mobile Tab Bar - Fixed bottom navigation for mobile */
@@ -202,13 +204,21 @@
     padding: 1rem; /* standard padding */
     padding-bottom: 90px;
     height: auto;
-    min-height: 100vh;
+    min-height: 100vh; /* Fallback */
+    min-height: 100dvh; /* Modern mobile viewport */
     padding-top: 0; 
+    
+    /* Prevent layout shift when scrollbar appears/disappears */
+    scrollbar-gutter: stable; 
   }
   
   .mobileStatsWrapper {
     display: block;
-    margin-bottom: 24px;
+    margin-bottom: 12px; /* Tweak to match other gaps */
     /* No negative margin here, we want it contained but clean */
+  }
+
+  .folderContent {
+    margin-top: 12px; /* Tighter spacing on mobile */
   }
 }

@@ -725,8 +725,14 @@
     scroll-snap-type: x mandatory;
     gap: 12px;
     padding-bottom: 24px;
-    padding-right: 16px; /* Right padding for scroll end */
-    margin-right: -16px; /* Counteract container padding */
+    
+    /* Edge-to-edge scrolling logic */
+    margin-right: -16px; /* Extend to right edge */
+    padding-right: 16px; /* Padding for the last item */
+    
+    /* Visual alignment */
+    margin-top: 4px;
+    
     grid-template-columns: none; /* Reset grid */
     
     /* Hide scrollbar */
