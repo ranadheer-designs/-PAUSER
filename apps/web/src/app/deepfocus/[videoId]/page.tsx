@@ -15,11 +15,10 @@
 
 import { useCallback, useState, useEffect, useRef, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { VideoPlayer, VideoPlayerHandle, CheckpointOverlay } from '@/components/DeepFocus';
+import { VideoPlayerHandle, SmartSidebar, SmartVideoPlayer } from '@/components/DeepFocus';
 import { Logo } from '@/components/Common/Logo';
 import { AuthPromptModal } from '@/components/DeepFocus/AuthPromptModal';
 import { createClient } from '@/utils/supabase/client';
-import { NotesPanel } from '@/components/DeepFocus/NotesPanel';
 import { useDeepFocus, type Checkpoint } from '@/hooks/useDeepFocus';
 import { useNotes } from '@/hooks/useNotes';
 import { parseUrlTimestamp } from '@/lib/player/PlayerController';
@@ -40,6 +39,8 @@ export default function DeepFocusPage({ params }: PageProps) {
   const { videoId } = params;
   const router = useRouter();
   const searchParams = useSearchParams();
+  const tParam = searchParams.get('t');
+  const seekToTime = tParam && !isNaN(parseFloat(tParam)) ? parseFloat(tParam) : undefined;
   
   const [videoDuration, setVideoDuration] = useState<number>(0);
   const [videoTitle, setVideoTitle] = useState<string>('');
@@ -50,6 +51,7 @@ export default function DeepFocusPage({ params }: PageProps) {
   const [checkpointsLoading, setCheckpointsLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
   const [contentId, setContentId] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -430,16 +432,27 @@ export default function DeepFocusPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* Video Player */}
-        <div className={styles.playerWrapper}>
-          <VideoPlayer
-            ref={playerRef}
-            videoId={videoId}
-            onTimeUpdate={onTimeUpdate}
-            onPlay={onPlay}
-            onPause={onPause}
-            onReady={onVideoReady}
-          />
+        {/* Video Player Area */}
+        <div 
+          className={`${styles.videoPlayerWrapper} ${
+            (!checkpointsEnabled || sidebarCollapsed) ? styles.fullWidth : ''
+          }`}
+        >
+          <div className={styles.videoPlayerContainer}>
+            <SmartVideoPlayer
+              ref={playerRef}
+              videoId={videoId}
+              checkpoints={checkpoints}
+              onCheckpointTriggered={(cp) => console.log('Triggered:', cp.title)}
+              onCheckpointComplete={(id) => console.log('Completed:', id)}
+              onTimeUpdate={updateTime}
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+              onReady={(duration) => setVideoDuration(duration)}
+
+              sidebarOpen={!sidebarCollapsed}
+            />
+          </div>
           
           {/* Seek Nudge Message */}
           {seekNudge && (
@@ -484,23 +497,19 @@ export default function DeepFocusPage({ params }: PageProps) {
             />
           ))}
         </div>
-
-        {/* Checkpoint Overlay */}
-        {activeCheckpoint && (
-          <CheckpointOverlay
-            checkpoint={activeCheckpoint}
-            contentId={contentId}
-            onComplete={onCheckpointComplete}
-            onDismiss={dismissCheckpoint}
-            onContinueToReveal={onContinueToReveal}
-          />
-        )}
       </div>
 
-      {/* Notes Panel */}
-      <aside className={styles.notesPanel}>
-        <NotesPanel
-          contentId={videoId}
+      {/* Smart Sidebar - replaces CheckpointOverlay and NotesPanel */}
+      <aside className={`${styles.smartSidebar} ${sidebarCollapsed ? styles.smartSidebarCollapsed : ''}`}>
+        <SmartSidebar
+          activeCheckpoint={activeCheckpoint}
+          contentId={contentId}
+          onCheckpointComplete={onCheckpointComplete}
+          onCheckpointDismiss={dismissCheckpoint}
+          onContinueToReveal={onContinueToReveal}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          videoId={videoId}
           notes={notes}
           currentTime={currentTime}
           onTakeNote={handleTakeNote}

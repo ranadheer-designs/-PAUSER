@@ -12,6 +12,8 @@
     "clean": "rimraf .next"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@monaco-editor/react": "^4.7.0",
     "@pauser/common": "workspace:*",
     "@pauser/ui": "workspace:*",
     "@react-three/drei": "^9.122.0",
@@ -26,16 +28,21 @@
     "react-dom": "^18.2.0",
     "resend": "^6.8.0",
     "three": "^0.160.0",
+    "youtube-caption-extractor": "^1.9.1",
     "youtube-captions-scraper": "^2.0.3",
     "youtube-transcript": "^1.2.1",
     "youtube-transcript-api": "^3.0.6",
-    "youtubei.js": "^16.0.1"
+    "youtubei.js": "^16.0.1",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.2.1",
     "eslint-config-next": "14.2.0",
-    "rimraf": "^5.0.5"
+    "jsdom": "^28.0.0",
+    "rimraf": "^5.0.5",
+    "vitest": "^1.2.0"
   }
 }

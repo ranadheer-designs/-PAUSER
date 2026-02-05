@@ -18,6 +18,7 @@ import type {
   AnalyzeVideoInput,
   OrganizeNotesInput,
   DetectTeachingMomentsInput,
+  GenerateAdaptiveCheckpointsInput,
   ExplanationResult,
   SummaryResult,
   ChallengeDraftResult,
@@ -28,7 +29,8 @@ import type {
   CodeChallengeGenerationResult,
   VideoAnalysisResult,
   OrganizedNotesAIResult,
-  TeachingMomentsResult
+  TeachingMomentsResult,
+  AdaptiveCheckpointGenerationResult
 } from './types';
 import { 
   ExplanationSchema, 
@@ -41,7 +43,8 @@ import {
   CodeChallengeGenerationSchema,
   VideoAnalysisSchema,
   OrganizedNotesSchema,
-  TeachingMomentSchema
+  TeachingMomentSchema,
+  AdaptiveCheckpointGenerationSchema
 } from './schemas';
 import { 
   SYSTEM_PROMPT, 
@@ -55,7 +58,9 @@ import {
   GENERATE_CODE_CHALLENGE_PROMPT,
   ANALYZE_VIDEO_CONTENT_PROMPT,
   ORGANIZE_NOTES_PROMPT,
-  DETECT_TEACHING_MOMENTS_PROMPT
+  DETECT_TEACHING_MOMENTS_PROMPT,
+  ADAPTIVE_CHECKPOINT_SYSTEM_PROMPT,
+  ADAPTIVE_CHECKPOINT_USER_PROMPT
 } from './prompts';
 import { AIProvider } from './provider';
 import { GeminiProvider, isGeminiConfigured } from './gemini-provider';
@@ -792,6 +797,130 @@ IMPORTANT: Your challenge MUST test one of the key concepts listed above.
       console.warn('[AI] Teaching moment detection failed:', error);
       return { moments: [] };
     }
+  }
+
+  /**
+   * Generate adaptive, context-aware learning checkpoints.
+   * Phase 2: Uses advanced AI prompt for intelligent checkpoint placement.
+   * Uses Gemini first for large context, then falls back to OpenRouter.
+   */
+  async generateAdaptiveCheckpoints(
+    input: GenerateAdaptiveCheckpointsInput
+  ): Promise<AdaptiveCheckpointGenerationResult | null> {
+    if (!this.config.enabled) {
+      console.log('[AI] Adaptive checkpoint generation disabled');
+      return null;
+    }
+
+    console.log(`[AI] Generating adaptive checkpoints for video: "${input.videoTitle}"`);
+
+    // Build the user prompt with template substitution
+    const userPrompt = ADAPTIVE_CHECKPOINT_USER_PROMPT
+      .replace('{{videoId}}', input.videoId)
+      .replace('{{videoTitle}}', input.videoTitle)
+      .replace('{{transcriptAnalysis}}', JSON.stringify(input.transcriptAnalysis || {}, null, 2))
+      .replace('{{userContext}}', JSON.stringify(input.userContext || {}, null, 2));
+
+    // Full prompt for AI (transcript included in context)
+    const fullPrompt = `${userPrompt}
+
+FULL TRANSCRIPT (for context):
+"""
+${input.transcript.slice(0, 25000)}
+"""
+
+Generate checkpoints that are perfectly timed and deeply relevant to the content.`;
+
+    // Try Gemini first (better for large context with up to 1M tokens)
+    if (this.geminiProvider) {
+      try {
+        console.log('[AI] Using Gemini for adaptive checkpoint generation...');
+        const result = await this.geminiProvider.generateWithRetry(
+          fullPrompt,
+          AdaptiveCheckpointGenerationSchema,
+          ADAPTIVE_CHECKPOINT_SYSTEM_PROMPT,
+          2 // max retries
+        );
+        console.log(`[AI] Gemini adaptive checkpoints generated: ${result.checkpoints?.length || 0} checkpoints`);
+        return result;
+      } catch (error) {
+        console.warn('[AI] Gemini adaptive checkpoint generation failed, trying OpenRouter:', error);
+      }
+    }
+
+    // Fallback to OpenRouter
+    try {
+      // Use smaller context for OpenRouter
+      const truncatedPrompt = `${userPrompt}
+
+TRANSCRIPT EXCERPT (first 8000 chars):
+"""
+${input.transcript.slice(0, 8000)}
+"""
+
+Generate checkpoints that are perfectly timed and deeply relevant.`;
+
+      const result = await this.generateWithFallback(
+        MODEL_CHAINS.education,
+        truncatedPrompt,
+        AdaptiveCheckpointGenerationSchema,
+        ADAPTIVE_CHECKPOINT_SYSTEM_PROMPT,
+        'adaptive checkpoint generation'
+      );
+      console.log(`[AI] OpenRouter adaptive checkpoints generated: ${result.checkpoints?.length || 0} checkpoints`);
+      return result;
+    } catch (error) {
+      console.error('[AI] Adaptive checkpoint generation failed:', error);
+      return this.getFallbackAdaptiveCheckpoints(input);
+    }
+  }
+
+  /**
+   * Fallback adaptive checkpoints when AI generation fails.
+   * Creates basic checkpoints at regular intervals.
+   */
+  private getFallbackAdaptiveCheckpoints(
+    input: GenerateAdaptiveCheckpointsInput
+  ): AdaptiveCheckpointGenerationResult {
+    console.log('[AI] Using fallback adaptive checkpoint generation');
+    
+    // Generate basic checkpoints every 5 minutes
+    const checkpoints = [];
+    const transcriptLength = input.transcript.length;
+    const estimatedDuration = Math.max(300, transcriptLength / 15); // Rough estimate: 15 chars/second
+    const interval = 300; // 5 minutes
+
+    for (let timestamp = interval; timestamp < estimatedDuration; timestamp += interval) {
+      checkpoints.push({
+        id: `cp_fallback_${timestamp}`,
+        timestamp,
+        type: 'REFLECTION' as const,
+        priority: 'MEDIUM' as const,
+        title: 'Understanding Check',
+        context: 'Take a moment to reflect on what you just learned.',
+        estimatedTime: '2-3 minutes',
+        difficulty: 'easy' as const,
+        reflectionPrompt: {
+          question: 'What are the key concepts you learned in the last few minutes?',
+          characterLimit: 500,
+        },
+        metadata: {
+          learningObjective: 'Reinforce understanding through reflection',
+        },
+      });
+    }
+
+    return {
+      videoId: input.videoId,
+      analysisMetadata: {
+        detectedDomain: 'general',
+        skillLevel: 'intermediate',
+        totalCheckpoints: checkpoints.length,
+        estimatedTotalPracticeTime: `${checkpoints.length * 3}-${checkpoints.length * 5} minutes`,
+        aiConfidence: 0.3,
+      },
+      checkpoints,
+    };
   }
 
   // --- Smart Fallbacks that use transcript content ---

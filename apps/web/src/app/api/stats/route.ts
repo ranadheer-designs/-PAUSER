@@ -63,28 +63,29 @@ export async function GET() {
       });
     }
 
-    // Fetch user's attempts for streak calculation
-    const { data: attempts } = await (supabase.from('attempts') as any)
-      .select('time_spent_ms, is_correct, created_at')
+    // Fetch user's attempts (completions) for streak calculation
+    const { data: attempts } = await (supabase.from('checkpoint_completions') as any)
+      .select('time_spent, was_helpful, completed_at')
       .eq('user_id', user.id);
     
     const attemptList = attempts || [];
     
     // Calculate streak
-    const activityDates = attemptList.map((a: any) => new Date(a.created_at));
+    const activityDates = attemptList.map((a: any) => new Date(a.completed_at));
     const streak = calculateStreakWithForgiveness(activityDates);
     
     // Calculate focus points
-    const correctAnswers = attemptList.filter((a: any) => a.is_correct).length;
+    // New schema uses was_helpful boolean instead of is_correct
+    const correctAnswers = attemptList.filter((a: any) => a.was_helpful).length;
     const checkpointsCompleted = attemptList.length;
     const focusPoints = (correctAnswers * 10) + (streak * 5) + (checkpointsCompleted * 2);
     
     // Fetch due flashcards (cards due for review)
-    const now = new Date().toISOString();
-    const { data: dueReviews } = await (supabase.from('reviews') as any)
+    const now = new Date().toISOString().split('T')[0];
+    const { data: dueReviews } = await (supabase.from('review_cards') as any)
       .select('id')
       .eq('user_id', user.id)
-      .lte('next_review_at', now);
+      .lte('next_review', now);
     
     const dueCards = dueReviews?.length || 0;
 

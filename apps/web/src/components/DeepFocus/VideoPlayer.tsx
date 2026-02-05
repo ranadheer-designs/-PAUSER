@@ -130,6 +130,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
 
       playerRef.current = new window.YT.Player('youtube-player', {
         videoId,
+        width: '100%',
+        height: '100%',
         playerVars: {
           autoplay: autoplay ? 1 : 0,
           controls: 1, // Keep YouTube controls (TOS compliant)

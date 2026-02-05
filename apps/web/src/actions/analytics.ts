@@ -21,13 +21,13 @@ export async function saveAttempt(
   }
 
   // Bypass strict type checking for now due to monorepo type inference issues
-  const { error } = await (supabase.from('attempts') as any).insert({
+  const { error } = await (supabase.from('checkpoint_completions') as any).insert({
     user_id: user.id,
     checkpoint_id: checkpointId,
-    is_correct: isCorrect,
-    time_spent_ms: timeSpentMs,
-    user_answer: userAnswer,
-    score: isCorrect ? 1.0 : 0.0,
+    was_helpful: isCorrect, // Semantic mapping mismatch but effectively 'success'
+    time_spent: Math.round(timeSpentMs / 1000), // ms -> seconds
+    user_response: userAnswer,
+    completed_at: new Date().toISOString()
   });
 
   if (error) {

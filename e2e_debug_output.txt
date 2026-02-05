@@ -1,0 +1,18 @@
+🚀 Starting End-to-End Test...
+Target: http://localhost:3000/api/deepfocus/dQw4w9WgXcQ
+
+📡 Sending POST request...
+⏱️ Response received in 26985ms
+Status: 200 OK
+
+✅ Response Success!
+   - Video ID: dQw4w9WgXcQ
+   - Segments: 61
+   - Checkpoints: 0
+
+📊 Analysis Preview:
+   - Domain: general
+   - Skill Level: beginner
+   - Topics: ...
+
+✨ E2E Test Passed!

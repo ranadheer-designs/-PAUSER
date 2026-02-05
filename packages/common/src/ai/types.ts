@@ -121,4 +121,44 @@ export interface TeachingMomentsResult {
   moments: TeachingMomentResult[];
 }
 
+// Phase 2: Adaptive Checkpoint Types
+import { AdaptiveCheckpointGenerationSchema } from './schemas';
 
+/** Result type for adaptive checkpoint generation */
+export type AdaptiveCheckpointGenerationResult = z.infer<typeof AdaptiveCheckpointGenerationSchema>;
+
+/** User context for adaptive checkpoint personalization */
+export interface UserLearningContext {
+  userId?: string;
+  learningHistory?: {
+    completedCheckpoints: number;
+    averageCompletionRate: number;
+    skillProgression: Record<string, 'novice' | 'intermediate' | 'advanced'>;
+  };
+  currentVideoProgress?: number;
+  pastPerformance?: Record<string, {
+    completionRate: number;
+    averageTimeSpent: number;
+    difficultyRating: number;
+  }>;
+}
+
+/** Input for generating adaptive checkpoints */
+export interface GenerateAdaptiveCheckpointsInput {
+  videoId: string;
+  videoTitle: string;
+  transcript: string;
+  transcriptAnalysis?: {
+    domain: string;
+    subDomain?: string;
+    detectedSkillLevel: string;
+    segments: Array<{
+      startTime: number;
+      endTime: number;
+      type: string;
+      topics: string[];
+    }>;
+    naturalBreakPoints: number[];
+  };
+  userContext?: UserLearningContext;
+}

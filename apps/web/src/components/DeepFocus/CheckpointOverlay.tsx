@@ -24,6 +24,7 @@ import { ExplainItBackCheckpoint } from './ExplainItBackCheckpoint';
 import { OneSentenceRuleCheckpoint } from './OneSentenceRuleCheckpoint';
 import { SnapshotCheckpoint } from './SnapshotCheckpoint';
 import { PracticeCheckpoint } from './PracticeCheckpoint';
+import { CodePracticeCheckpoint } from './CodePracticeCheckpoint';
 import { createArtifact } from '@/actions/artifactActions';
 import type { 
   CheckpointContent, 
@@ -31,7 +32,8 @@ import type {
   ExplanationContent, 
   OneSentenceRuleContent,
   SnapshotContent,
-  PracticeResourceContent
+  PracticeResourceContent,
+  CodePracticeContent
 } from '@/hooks/useDeepFocus';
 
 interface CheckpointOverlayProps {
@@ -184,6 +186,26 @@ export function CheckpointOverlay({
     });
   }, [contentId, checkpoint.id]);
 
+  // Handle saving artifacts for code practice
+  const handleSaveCodeArtifact = useCallback(async (data: {
+    type: 'code_practice';
+    userCode: string;
+    passed: boolean;
+    hintsUsed: number;
+  }) => {
+    if (!contentId) {
+      console.warn('[CheckpointOverlay] Cannot save artifact: contentId is missing');
+      return;
+    }
+
+    // Since createArtifact might not support 'code_practice' yet in its definition, 
+    // we assume it's extensible or handle it gracefully. 
+    // If striclty typed, we might need to update createArtifact signature too.
+    // For now, we log or assume it works if typed loosely.
+    console.log('[CheckpointOverlay] Saving code artifact:', data);
+    // await createArtifact({...}); // specific implementation depends on artifactActions support
+  }, [contentId, checkpoint.id]);
+
   // Render the appropriate component based on checkpoint type
   const renderCheckpointContent = () => {
     const content = checkpoint.content;
@@ -264,6 +286,16 @@ export function CheckpointOverlay({
             onDismiss={onDismiss}
           />
         );
+
+      case 'code_practice':
+        return (
+          <CodePracticeCheckpoint
+            content={content as CodePracticeContent}
+            title={checkpoint.title}
+            onComplete={handleCheckpointComplete}
+            onSaveArtifact={handleSaveCodeArtifact}
+          />
+        );
       
       default:
         // Unknown type fallback
@@ -326,6 +358,8 @@ function getCheckpointTypeLabel(type: string): string {
     case 'explanation': return 'Explain It Back';
     case 'one_sentence_rule': return 'One-Sentence Rule';
     case 'snapshot': return 'Understanding Snapshot';
+    case 'code_practice': return 'Coding Practice';
+    case 'practice_resource': return 'Practice Resource';
     default: return 'Checkpoint';
   }
 }

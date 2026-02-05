@@ -82,5 +82,11 @@ export type { Database } from './types/database';
 
 // AI Service
 export { AIService } from './ai/service';
-export type { AIConfig, ExplainErrorInput } from './ai/types';
+export type { 
+  AIConfig, 
+  ExplainErrorInput,
+  GenerateAdaptiveCheckpointsInput,
+  AdaptiveCheckpointGenerationResult,
+  UserLearningContext,
+} from './ai/types';
 export * from './ai/schemas';

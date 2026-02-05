@@ -327,3 +327,112 @@ export const TeachingMomentSchema = z.object({
   transcript_text: z.string(),
 });
 
+// ============================================================================
+// PHASE 2: Adaptive Checkpoint Generation Schemas
+// ============================================================================
+
+/**
+ * Embedded Code Editor Configuration
+ */
+export const EmbeddedEditorSchema = z.object({
+  language: z.enum(['javascript', 'python', 'typescript', 'sql', 'java', 'cpp', 'go']),
+  starterCode: z.string(),
+  testCases: z.array(z.object({
+    input: z.any(),
+    expected: z.any(),
+    description: z.string().optional(),
+  })).optional(),
+  hints: z.array(z.string()).optional(),
+  buggyCode: z.string().optional(), // For DEBUG_CHALLENGE type
+  solution: z.string().optional(),
+});
+
+/**
+ * Quiz Question Schema
+ */
+export const AdaptiveQuizSchema = z.object({
+  question: z.string(),
+  options: z.array(z.object({
+    id: z.string(),
+    text: z.string(),
+    isCorrect: z.boolean(),
+  })),
+  explanation: z.string(),
+  incorrectFeedback: z.record(z.string(), z.string()).optional(),
+});
+
+/**
+ * Checkpoint Adaptive Rules
+ */
+export const AdaptiveRulesSchema = z.object({
+  onSuccess: z.enum(['INCREASE_DIFFICULTY', 'NEXT_CHECKPOINT', 'BONUS_CHALLENGE']).optional(),
+  onFailure: z.enum(['PROVIDE_GUIDED_SOLUTION', 'REDUCE_DIFFICULTY', 'OFFER_HINT']).optional(),
+  onSkip: z.enum(['MARK_FOR_LATER_REVIEW', 'SHOW_SUMMARY', 'NO_ACTION']).optional(),
+});
+
+/**
+ * Adaptive Checkpoint Type Enum
+ */
+export const AdaptiveCheckpointTypeSchema = z.enum([
+  'CODE_PRACTICE',      // Implement code from scratch
+  'DEBUG_CHALLENGE',    // Find and fix bugs
+  'CONCEPT_QUIZ',       // Multiple choice quiz
+  'DESIGN_PRACTICE',    // Color palettes, font pairing, etc.
+  'CRITIQUE_CHALLENGE', // Analyze and annotate designs
+  'REFLECTION',         // Free-form text reflection
+  'KNOWLEDGE_CHECK',    // Drag-and-drop, ordering, matching
+]);
+
+/**
+ * Single Adaptive Checkpoint Schema
+ */
+export const AdaptiveCheckpointItemSchema = z.object({
+  id: z.string(),
+  timestamp: z.number(),
+  type: AdaptiveCheckpointTypeSchema,
+  priority: z.enum(['HIGH', 'MEDIUM', 'LOW']).default('MEDIUM'),
+  title: z.string(),
+  context: z.string(),
+  estimatedTime: z.string(), // e.g., "5-8 minutes"
+  difficulty: z.enum(['easy', 'medium', 'hard']),
+  
+  // Type-specific content (one of these will be present)
+  embeddedEditor: EmbeddedEditorSchema.optional(),
+  quiz: AdaptiveQuizSchema.optional(),
+  reflectionPrompt: z.object({
+    question: z.string(),
+    characterLimit: z.number().optional(),
+    followUp: z.string().optional(),
+  }).optional(),
+  
+  // Metadata
+  metadata: z.object({
+    prerequisiteCheckpoints: z.array(z.string()).optional(),
+    unlocks: z.array(z.string()).optional(),
+    videoSegmentCovered: z.string().optional(),
+    learningObjective: z.string(),
+    adaptiveRules: AdaptiveRulesSchema.optional(),
+  }),
+});
+
+/**
+ * Full Adaptive Checkpoint Generation Response Schema
+ */
+export const AdaptiveCheckpointGenerationSchema = z.object({
+  videoId: z.string(),
+  analysisMetadata: z.object({
+    detectedDomain: z.enum(['coding', 'design', 'general', 'business']),
+    subDomain: z.string().optional(),
+    skillLevel: z.enum(['beginner', 'intermediate', 'advanced']),
+    totalCheckpoints: z.number(),
+    estimatedTotalPracticeTime: z.string(),
+    aiConfidence: z.number().min(0).max(1),
+  }),
+  checkpoints: z.array(AdaptiveCheckpointItemSchema),
+  learningPath: z.object({
+    currentVideo: z.string(),
+    suggestedNext: z.array(z.string()).optional(),
+    prerequisiteTopics: z.array(z.string()).optional(),
+  }).optional(),
+});
+

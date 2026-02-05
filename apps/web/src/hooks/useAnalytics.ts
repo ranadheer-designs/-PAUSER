@@ -103,28 +103,30 @@ export function useAnalytics() {
         return;
       }
 
-      // Fetch user's attempts with timestamp for streak calculation
-      const { data: attempts } = await (supabase.from('attempts') as any)
-        .select('time_spent_ms, is_correct, created_at')
+      // Fetch user's completions with timestamp for streak calculation
+      const { data: completions } = await (supabase.from('checkpoint_completions') as any)
+        .select('time_spent, was_helpful, completed_at')
         .eq('user_id', user.id);
       
-      const attemptList = attempts || [];
+      const completionList = completions || [];
       
       // Calculate metrics
-      const totalMs = attemptList.reduce((acc: number, curr: any) => acc + (curr.time_spent_ms || 0), 0);
-      const checkpointsCompleted = attemptList.length;
+      // time_spent is in seconds, convert to ms for existing logic
+      const totalMs = completionList.reduce((acc: number, curr: any) => acc + ((curr.time_spent || 0) * 1000), 0);
+      const checkpointsCompleted = completionList.length;
 
       const today = new Date().toISOString().split('T')[0];
-      const checkpointsCompletedToday = attemptList.filter((a: any) => 
-        new Date(a.created_at).toISOString().split('T')[0] === today
+      const checkpointsCompletedToday = completionList.filter((a: any) => 
+        new Date(a.completed_at).toISOString().split('T')[0] === today
       ).length;
-      const correctAnswers = attemptList.filter((a: any) => a.is_correct).length;
+      
+      const correctAnswers = completionList.filter((a: any) => a.was_helpful).length;
       const successRate = checkpointsCompleted > 0 
         ? Math.round((correctAnswers / checkpointsCompleted) * 100) 
         : 0;
       
       // Calculate streak from activity dates (48-hour forgiveness)
-      const activityDates = attemptList.map((a: any) => new Date(a.created_at));
+      const activityDates = completionList.map((a: any) => new Date(a.completed_at));
       const streak = calculateStreakWithForgiveness(activityDates);
       
       // Calculate Focus Points
@@ -132,8 +134,8 @@ export function useAnalytics() {
 
       // Build activity log (last 6 months)
       const activityLog: Record<string, number> = {};
-      attemptList.forEach((a: any) => {
-        const date = new Date(a.created_at).toISOString().split('T')[0];
+      completionList.forEach((a: any) => {
+        const date = new Date(a.completed_at).toISOString().split('T')[0];
         activityLog[date] = (activityLog[date] || 0) + 1;
       });
 

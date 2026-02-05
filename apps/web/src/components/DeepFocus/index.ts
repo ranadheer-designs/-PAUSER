@@ -28,6 +28,10 @@ export { PracticeCheckpoint } from './PracticeCheckpoint';
 // Practice sidebar
 export { PracticeSidebar } from './PracticeSidebar';
 
+// Smart Sidebar (replaces overlay-based checkpoints)
+export { SmartSidebar } from './SmartSidebar';
+export type { SmartSidebarProps } from './SmartSidebar';
+
 // Notes
 export { NotesPanel } from './NotesPanel';
 export { NoteEditor } from './NoteEditor';
@@ -35,3 +39,17 @@ export { NoteEditor } from './NoteEditor';
 // Modals
 export { AuthPromptModal } from './AuthPromptModal';
 export { PaywallModal } from './PaywallModal';
+
+// Adaptive Checkpoint Components (Phase 2)
+export { CodePracticeCheckpoint } from './CodePracticeCheckpoint';
+export { ConceptQuizCheckpoint } from './ConceptQuizCheckpoint';
+export { ReflectionCheckpoint } from './ReflectionCheckpoint';
+
+// Embedded Experiences (Phase 3)
+export { EmbeddedCodeEditor } from './EmbeddedCodeEditor';
+export { ColorPaletteStudio } from './ColorPaletteStudio';
+export { EmbeddedResearchPanel } from './EmbeddedResearchPanel';
+
+// Smart Video Player (Phase 4)
+export { SmartVideoPlayer } from './SmartVideoPlayer';
+export { CheckpointTimeline } from './CheckpointTimeline';

@@ -1,0 +1,846 @@
+🎬 Testing extraction for Video ID: dQw4w9WgXcQ
+[TranscriptExtractor] Starting extraction for video: dQw4w9WgXcQ
+[TranscriptExtractor] Method 1: Trying youtube-transcript...
+[TranscriptExtractor] Method 1: Returned empty transcript.
+[TranscriptExtractor] Method 2: Trying youtube-caption-extractor...
+[TranscriptExtractor] Method 3: Trying youtube-captions-scraper...
+[TranscriptExtractor] Method 3: Trying youtubei.js...
+[YOUTUBEJS][Parser]: InnertubeError: TicketShelf not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TicketShelf extends YTNode {
+  static type = 'TicketShelf';
+
+  title: string;
+  events: ObservedArray<YTNodes.TicketEvent> | null;
+  upcoming_title: string;
+  show_more: string;
+  show_less: string;
+  information_text: string;
+  use_calendar_avatar: boolean;
+
+  constructor(data: RawNode) {
+    super();
+    this.title = data.title;
+    this.events = Parser.parse(data.events, true, YTNodes.TicketEvent);
+    this.upcoming_title = data.upcomingTitle;
+    this.show_more = data.showMore;
+    this.show_less = data.showLess;
+    this.information_text = data.informationText;
+    this.use_calendar_avatar = data.useCalendarAvatar;
+  }
+}
+
+    at ERROR_HANDLER (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:141:9)
+    at createRuntimeClass (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\generator.ts:412:3)
+    at generateRuntimeClass (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\generator.ts:480:19)
+    at parseItem (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:554:9)
+    at Module.parseArray (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:609:22)
+    at new TwoColumnWatchNextResults (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\classes\TwoColumnWatchNextResults.ts:36:27)
+    at parseItem (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:578:22)
+    at parse (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:651:32)
+    at Module.parseResponse (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:235:20)
+    at new MediaInfo (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\core\mixins\MediaInfo.ts:53:41) {
+  date: 2026-02-04T21:37:13.081Z,
+  version: '16.0.1',
+  info: undefined
+}
+[YOUTUBEJS][Parser]: InnertubeError: TicketEvent not found!
+This is a bug, want to help us fix it? Follow the instructions at https://github.com/LuanRT/YouTube.js/blob/main/docs/updating-the-parser.md or report it at https://github.com/LuanRT/YouTube.js/issues!
+Introspected and JIT generated this class in the meantime:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+  }
+}
+
+    at ERROR_HANDLER (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:141:9)
+    at createRuntimeClass (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\generator.ts:412:3)
+    at generateRuntimeClass (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\generator.ts:480:19)
+    at generateRuntimeClass (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\generator.ts:484:5)
+    at parseItem (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:554:9)
+    at Module.parseArray (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:609:22)
+    at new TwoColumnWatchNextResults (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\classes\TwoColumnWatchNextResults.ts:36:27)
+    at parseItem (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:578:22)
+    at parse (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:651:32)
+    at Module.parseResponse (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\parser\parser.ts:235:20) {
+  date: 2026-02-04T21:37:13.090Z,
+  version: '16.0.1',
+  info: undefined
+}
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[YOUTUBEJS][Parser]: TicketEvent changed!
+The following keys where altered: title
+The class has changed to:
+class TicketEvent extends YTNode {
+  static type = 'TicketEvent';
+
+  time_month: string;
+  time_day: string;
+  link_text: string;
+  button_text: string;
+  endpoint: NavigationEndpoint;
+  subtitle1: string;
+  subtitle2: string;
+  time_date: string;
+  time_time: string;
+  time_weekday: string;
+  button_accessibility_text: string;
+  has_multiple_offers: boolean;
+  title?: string;
+
+  constructor(data: RawNode) {
+    super();
+    this.time_month = data.timeMonth;
+    this.time_day = data.timeDay;
+    this.link_text = data.linkText;
+    this.button_text = data.buttonText;
+    this.endpoint = new NavigationEndpoint(data.buttonCommand);
+    this.subtitle1 = data.subtitle1;
+    this.subtitle2 = data.subtitle2;
+    this.time_date = data.timeDate;
+    this.time_time = data.timeTime;
+    this.time_weekday = data.timeWeekday;
+    this.button_accessibility_text = data.buttonAccessibilityText;
+    this.has_multiple_offers = data.hasMultipleOffers;
+    this.title = Reflect.has(data, 'title') ? data.title : undefined;
+  }
+}
+
+[TranscriptExtractor] Method 3 (getTranscript) failed: InnertubeError: Request to https://www.youtube.com/youtubei/v1/get_transcript?prettyPrint=false&alt=json failed with status code 400
+    at HTTPClient.fetch (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\utils\HTTPClient.ts:153:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Actions.execute (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\core\Actions.ts:154:22)
+    at async VideoInfo.getTranscript (C:\Users\shobh\Downloads\PAUSER\node_modules\.pnpm\youtubei.js@16.0.1\node_modules\youtubei.js\src\core\mixins\MediaInfo.ts:203:22)
+    at async robustExtractTranscript (C:\Users\shobh\Downloads\PAUSER\apps\web\src\services\robustTranscriptExtractor.ts:99:32)
+    at async testVideo (C:\Users\shobh\Downloads\PAUSER\scripts\test-video.ts:19:20) {
+  date: 2026-02-04T21:37:13.173Z,
+  version: '16.0.1',
+  info: '{\n' +
+    '  "error": {\n' +
+    '    "code": 400,\n' +
+    '    "message": "Precondition check failed.",\n' +
+    '    "errors": [\n' +
+    '      {\n' +
+    '        "message": "Precondition check failed.",\n' +
+    '        "domain": "global",\n' +
+    '        "reason": "failedPrecondition"\n' +
+    '      }\n' +
+    '    ],\n' +
+    '    "status": "FAILED_PRECONDITION"\n' +
+    '  }\n' +
+    '}\n'
+}
+[TranscriptExtractor] All methods failed for video dQw4w9WgXcQ
+❌ Extraction Failed: Could not extract transcript using any available method.
+💡 Suggestion: Try a video with known English captions, e.g., dQw4w9WgXcQ

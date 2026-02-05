@@ -61,11 +61,10 @@ export async function getNotesWithVideos(): Promise<NoteWithVideo[]> {
     .from('notes')
     .select(`
       *,
-      contents:content_id (
+      videos:content_id (
         id,
         title,
-        thumbnail_url,
-        external_id
+        youtube_id
       )
     `)
     .order('updated_at', { ascending: false });
@@ -75,10 +74,10 @@ export async function getNotesWithVideos(): Promise<NoteWithVideo[]> {
   return (data || []).map((row: any) => ({
     ...dbNoteToNote(row),
     video: {
-      id: row.contents.id,
-      title: row.contents.title,
-      thumbnailUrl: row.contents.thumbnail_url,
-      externalId: row.contents.external_id,
+      id: row.videos.id,
+      title: row.videos.title,
+      thumbnailUrl: `https://img.youtube.com/vi/${row.videos.youtube_id}/hqdefault.jpg`,
+      externalId: row.videos.youtube_id,
     },
   }));
 }
@@ -187,27 +186,24 @@ export async function upsertNote(
   const supabase = createClient();
   
   // IMPORTANT: contentId in the Note type is the YouTube video ID (external_id),
-  // but the database expects a UUID that references contents.id.
-  // We need to look up or create the content record first.
+  // but the database expects a UUID that references videos.id (formerly contents).
+  // We need to look up or create the video record first.
   
   let contentUuid: string;
   
-  // Try to find existing content by external_id
+  // Try to find existing content by youtube_id (formerly external_id)
   const { data: existingContent } = await (supabase as any)
-    .from('contents')
+    .from('videos')
     .select('id')
-    .eq('external_id', note.contentId)
-    .eq('type', 'video')
-    .order('created_at', { ascending: true })
-    .limit(1)
+    .eq('youtube_id', note.contentId)
     .maybeSingle();
   
   if (existingContent) {
     contentUuid = existingContent.id;
-    console.log('[upsertNote] Found existing content:', contentUuid);
+    console.log('[upsertNote] Found existing video:', contentUuid);
   } else {
     // Content doesn't exist yet - fetch YouTube metadata and create record
-    console.warn(`[upsertNote] Content not found for external_id: ${note.contentId}, creating record with YouTube metadata`);
+    console.warn(`[upsertNote] Video not found for youtube_id: ${note.contentId}, creating record with YouTube metadata`);
     
     // Check if user is authenticated
     const { data: { user } } = await supabase.auth.getUser();
@@ -224,32 +220,27 @@ export async function upsertNote(
     const metadata = await fetchYouTubeMetadata(note.contentId);
     
     const videoTitle = metadata?.title || `Video ${note.contentId}`;
-    const thumbnailUrl = metadata?.thumbnailUrl || getYouTubeThumbnail(note.contentId, 'hq');
+    // thumbnail not in videos table anymore, just title etc
     
-    console.log('[upsertNote] Fetched YouTube metadata:', { title: videoTitle, thumbnail: thumbnailUrl });
+    console.log('[upsertNote] Fetched YouTube metadata:', { title: videoTitle });
     
     const { data: newContent, error: createError } = await (supabase as any)
-      .from('contents')
+      .from('videos')
       .insert({
-        type: 'video',
-        external_id: note.contentId,
+        youtube_id: note.contentId,
         title: videoTitle,
         description: null,
-        thumbnail_url: thumbnailUrl,
       })
       .select('id')
       .single();
     
     if (createError) {
-      console.error('[upsertNote] Failed to create content:', createError);
-      console.error('[upsertNote] Error code:', createError.code);
-      console.error('[upsertNote] Error details:', createError.details);
-      console.error('[upsertNote] Error hint:', createError.hint);
+      console.error('[upsertNote] Failed to create video:', createError);
       throw createError;
     }
     
     contentUuid = newContent.id;
-    console.log('[upsertNote] Created new content with metadata:', contentUuid);
+    console.log('[upsertNote] Created new video:', contentUuid);
   }
   
   // Generate a proper UUID if the note has a local ID

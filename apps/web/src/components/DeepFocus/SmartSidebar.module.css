@@ -1,0 +1,256 @@
+/**
+ * SmartSidebar.module.css
+ * 
+ * Styles for the Smart Sidebar component.
+ * Following Pauser Design Language.
+ */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Collapse Toggle Button */
+.collapseToggle {
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: #1a1d21;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #98A0B2;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 200ms ease;
+}
+
+.collapseToggle:hover {
+  background: #2a2d31;
+  color: #E6EEF8;
+  border-color: rgba(59, 75, 216, 0.4);
+}
+
+.collapseToggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 200ms ease;
+}
+
+.collapsed .collapseToggle svg {
+  transform: rotate(180deg);
+}
+
+/* Sidebar Header */
+.sidebarHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(15, 17, 21, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.sidebarTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #98A0B2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* Active Checkpoint Panel */
+.checkpointPanel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  transition: flex 300ms ease, padding 300ms ease;
+  min-height: 100px;
+}
+
+.checkpointPanelInactive {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+.checkpointActive {
+  background: linear-gradient(135deg, rgba(59, 75, 216, 0.1) 0%, rgba(34, 195, 166, 0.05) 100%);
+  border: 1px solid rgba(59, 75, 216, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  animation: slideIn 300ms ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.checkpointHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.checkpointIcon {
+  width: 24px;
+  height: 24px;
+  background: rgba(59, 75, 216, 0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.checkpointLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6F7A96;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.checkpointTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #E6EEF8;
+  margin: 0 0 12px 0;
+}
+
+.checkpointContent {
+  /* Container for rendered checkpoint components */
+  margin-top: 8px;
+}
+
+/* Empty state when no checkpoint is active */
+.noCheckpoint {
+  padding: 24px;
+  text-align: center;
+  color: #6F7A96;
+}
+
+.noCheckpointIcon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.noCheckpointText {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Divider between checkpoint and notes */
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0;
+}
+
+/* Notes Section at bottom - wraps NotesPanel */
+.notesSection {
+  flex: 1;
+  min-height: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Collapsed State */
+.collapsed {
+  padding: 12px 8px;
+}
+
+.collapsed .sidebarHeader,
+.collapsed .checkpointPanel,
+.collapsed .notesSection {
+  display: none;
+}
+
+.collapsedContent {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.collapsed .collapsedContent {
+  display: flex;
+}
+
+.collapsedIcon {
+  width: 28px;
+  height: 28px;
+  background: rgba(59, 75, 216, 0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.collapsedBadge {
+  width: 20px;
+  height: 20px;
+  background: #3B4BD8;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mini Video Preview (for collapsed state) */
+.miniPreview {
+  width: 32px;
+  height: 18px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #1a1d21;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.miniPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .collapseToggle {
+    display: none;
+  }
+  
+  .sidebar {
+    flex-direction: column;
+  }
+  
+  .checkpointPanel {
+    padding: 12px;
+    flex: none;
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+  
+  .notesSection {
+    min-height: 150px;
+  }
+}

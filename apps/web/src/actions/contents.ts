@@ -11,56 +11,51 @@ interface ContentData {
 }
 
 /**
- * Get or create a content record by YouTube video ID.
- * Returns the UUID of the content record.
+ * Get or create a video record by YouTube video ID.
+ * Returns the UUID of the videos record.
  */
 export async function getOrCreateContent(data: ContentData): Promise<string> {
   const supabase = createClient();
   
-  // First, try to find existing content by external_id
+  // First, try to find existing video by youtube_id
   const { data: existing } = await (supabase as any)
-    .from('contents')
+    .from('videos')
     .select('id')
-    .eq('external_id', data.externalId)
-    .eq('type', 'video')
-    .single();
+    .eq('youtube_id', data.externalId)
+    .maybeSingle();
   
   if (existing) {
     return existing.id;
   }
   
-  // If not found, create new content
-  const { data: newContent, error: createError } = await (supabase as any)
-    .from('contents')
+  // If not found, create new video
+  const { data: newVideo, error: createError } = await (supabase as any)
+    .from('videos')
     .insert({
-      type: 'video',
-      external_id: data.externalId,
+      youtube_id: data.externalId,
       title: data.title,
       description: data.description,
-      thumbnail_url: data.thumbnailUrl,
-      duration_seconds: data.durationSeconds,
     })
     .select('id')
     .single();
   
   if (createError) throw createError;
   
-  return newContent.id;
+  return newVideo.id;
 }
 
 /**
- * Get content UUID by YouTube video ID.
+ * Get video UUID by YouTube video ID.
  * Returns null if not found.
  */
 export async function getContentIdByExternalId(externalId: string): Promise<string | null> {
   const supabase = createClient();
   
   const { data } = await (supabase as any)
-    .from('contents')
+    .from('videos')
     .select('id')
-    .eq('external_id', externalId)
-    .eq('type', 'video')
-    .single();
+    .eq('youtube_id', externalId)
+    .maybeSingle();
   
   if (!data) return null;
   

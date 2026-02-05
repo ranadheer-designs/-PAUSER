@@ -236,10 +236,9 @@ export async function getAllUserArtifacts(): Promise<ArtifactWithVideoInfo[]> {
     .from('learning_artifacts')
     .select(`
       *,
-      contents:content_id (
+      videos:content_id (
         title,
-        thumbnail_url,
-        external_id
+        youtube_id
       )
     `)
     .eq('user_id', user.id)
@@ -250,11 +249,11 @@ export async function getAllUserArtifacts(): Promise<ArtifactWithVideoInfo[]> {
     throw new Error('Failed to fetch artifacts');
   }
 
-  return (data || []).map((row: DbArtifactRow) => ({
+  return (data || []).map((row: DbArtifactRow & { videos: any }) => ({
     ...mapDbToArtifact(row),
-    videoTitle: row.contents?.title || 'Unknown Video',
-    videoThumbnailUrl: row.contents?.thumbnail_url || null,
-    videoExternalId: row.contents?.external_id || '',
+    videoTitle: row.videos?.title || 'Unknown Video',
+    videoThumbnailUrl: row.videos?.youtube_id ? `https://img.youtube.com/vi/${row.videos.youtube_id}/hqdefault.jpg` : null,
+    videoExternalId: row.videos?.youtube_id || '',
   }));
 }
 

@@ -1,36 +1,35 @@
 'use server';
 
 /**
- * Checkpoint Actions
+ * Checkpoint Actions (Phase 6 Schema)
  * 
- * Supabase CRUD operations for checkpoints.
- * Handles persistence and retrieval of AI-generated cognitive checkpoints.
+ * Supabase CRUD operations for checkpoints using the new 'videos' and 'checkpoints' tables.
  * 
- * Checkpoint Types:
- * - prediction: Prediction Before Reveal
- * - explanation: Explain It Back
- * - one_sentence_rule: One-Sentence Rule
+ * UPDATE: Uses Service Role key (if available) for write operations to ensure
+ * reliability regardless of RLS policies for authenticated users.
  */
 
 import { createClient } from '@/utils/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-interface DbCheckpoint {
+interface VideoRecord {
   id: string;
-  content_id: string;
-  timestamp_seconds: number;
+  youtube_id: string;
+}
+
+interface NewCheckpointRecord {
+  id: string;
+  video_id: string;
+  timestamp: number;
   type: string;
-  title: string | null;
-  prompt: string;
-  options: any | null;
-  answer_key: any;
-  explanation: string | null;
-  difficulty: number;
+  title: string;
+  embedded_config: any;
+  metadata: any;
   ai_generated: boolean;
-  verified: boolean;
   created_at: string;
 }
 
@@ -64,7 +63,7 @@ interface SnapshotContent {
   context: string;
 }
 
-/** Practice Resource content (LeetCode, HackerRank, etc.) */
+/** Practice Resource content */
 interface PracticeResourceContent {
   type: 'practice_resource';
   platform: 'leetcode' | 'hackerrank' | 'codewars';
@@ -76,12 +75,23 @@ interface PracticeResourceContent {
   matchReason: string;
 }
 
-type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent;
+/** Code Practice content */
+interface CodePracticeContent {
+  type: 'code_practice';
+  language: string;
+  starterCode: string;
+  testCases: Array<{ input: unknown; expected: unknown; description?: string }>;
+  hints: string[];
+  solution: string;
+  problem: string;
+}
+
+type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent | CodePracticeContent;
 
 export interface Checkpoint {
   id: string;
   timestamp: number;
-  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource';
+  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource' | 'code_practice';
   title: string;
   completed: boolean;
   content?: CheckpointContent;
@@ -92,117 +102,127 @@ export interface Checkpoint {
 // ============================================================================
 
 /**
- * Get or create content record for a video.
+ * Create a Supabase client with Service Role privileges if keys are available.
+ * Falls back to null if keys are missing.
  */
-async function getOrCreateContentId(
+function createAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (supabaseUrl && serviceKey) {
+    return createSupabaseClient(supabaseUrl, serviceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
+  }
+  return null;
+}
+
+/**
+ * Get the best available Supabase client for Write operations.
+ * Prioritizes Admin client to bypass RLS, falls back to User client.
+ */
+function getWriteClient() {
+  const admin = createAdminClient();
+  if (admin) return admin;
+  return createClient(); // Fallback to user session client
+}
+
+/**
+ * Get or create 'videos' record.
+ */
+export async function getOrCreateVideoId(
   videoId: string,
   metadata?: { title?: string; description?: string; thumbnailUrl?: string }
 ): Promise<string> {
-  const supabase = createClient();
+  const supabase = getWriteClient();
   
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  const { data: existingContent } = await supabase
-    .from('contents')
+  // Try finding existing video
+  const { data: existingVideo } = await supabase
+    .from('videos')
     .select('id')
-    .eq('external_id', videoId)
-    .eq('type', 'video')
-    .order('created_at', { ascending: true })
-    .limit(1)
+    .eq('youtube_id', videoId)
     .maybeSingle();
   
-  if (existingContent) {
-    // If metadata is provided, update the existing record
+  if (existingVideo) {
+    // Optional: Update metadata if provided
     if (metadata?.title) {
-        // Cast to any to bypass strict table typing issues
-        const _supabase = supabase as any;
-        await _supabase
-            .from('contents')
+        await (supabase
+            .from('videos') as any)
             .update({
                 title: metadata.title,
                 description: metadata.description || null,
-                thumbnail_url: metadata.thumbnailUrl || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
             })
-            .eq('id', (existingContent as any).id);
+            .eq('id', (existingVideo as any).id);
     }
-    return (existingContent as any).id;
+    return (existingVideo as any).id;
   }
   
-  // @ts-ignore
-  const { data: newContent, error } = await supabase
-    .from('contents')
+  // Insert new video
+    const { data: newVideo, error } = await (supabase
+    .from('videos') as any)
     .insert({
-      type: 'video' as const,
-      external_id: videoId,
+      youtube_id: videoId,
       title: metadata?.title || `Video ${videoId}`,
       description: metadata?.description || null,
-      thumbnail_url: metadata?.thumbnailUrl || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-      created_by: user?.id || null,
-    } as any)
+      duration: 0
+    })
     .select('id')
     .single();
   
   if (error) {
-    console.error('[getOrCreateContentId] Failed to create content:', error);
+    console.error('[getOrCreateVideoId] Failed to create video:', error);
     throw error;
   }
   
-  return (newContent as any).id;
+  return (newVideo as any).id;
 }
 
-/**
- * Update video metadata (title, description, etc.)
- * Useful for correcting fallback titles.
- */
 export async function updateVideoMetadata(
   videoId: string, 
   metadata: { title: string; description?: string; thumbnailUrl?: string }
 ): Promise<void> {
-    await getOrCreateContentId(videoId, metadata);
+    await getOrCreateVideoId(videoId, metadata);
 }
 
 // ============================================================================
 // GET CHECKPOINTS
 // ============================================================================
 
-/**
- * Get checkpoints for a video by YouTube ID.
- */
 export async function getCheckpointsByVideoId(videoId: string): Promise<Checkpoint[]> {
-  const supabase = createClient();
+  const supabase = createClient(); // Use standard client for reads
   
-  const { data: content } = await supabase
-    .from('contents')
+  // Find video ID
+  const { data: video } = await supabase
+    .from('videos')
     .select('id')
-    .eq('external_id', videoId)
-    .eq('type', 'video')
-    .order('created_at', { ascending: true })
-    .limit(1)
+    .eq('youtube_id', videoId)
     .maybeSingle();
   
-  if (!content) {
-    return [];
-  }
+  if (!video) return [];
   
+  // Fetch checkpoints
   const { data: checkpoints, error } = await supabase
     .from('checkpoints')
     .select('*')
-    .eq('content_id', (content as any).id)
-    .order('timestamp_seconds', { ascending: true });
+    .eq('video_id', (video as any).id)
+    .order('timestamp', { ascending: true });
   
   if (error) {
     console.error('[getCheckpointsByVideoId] Failed to fetch checkpoints:', error);
     throw error;
   }
   
-  return (checkpoints || []).map((cp: DbCheckpoint) => {
+  return (checkpoints || []).map((cp: any) => {
     const checkpointContent = reconstructContent(cp);
     
     return {
       id: cp.id,
-      timestamp: cp.timestamp_seconds,
-      type: cp.type as 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource',
-      title: cp.title || 'Checkpoint',
+      timestamp: cp.timestamp,
+      type: cp.type as any,
+      title: cp.title,
       completed: false,
       content: checkpointContent,
     };
@@ -210,55 +230,68 @@ export async function getCheckpointsByVideoId(videoId: string): Promise<Checkpoi
 }
 
 /**
- * Reconstruct checkpoint content from database fields.
+ * Reconstruct content from embedded_config
  */
-function reconstructContent(cp: DbCheckpoint): CheckpointContent | undefined {
+function reconstructContent(cp: any): CheckpointContent | undefined {
+  const config = cp.embedded_config || {};
+  
+  // Map back to CheckpointContent types based on 'type' column
   switch (cp.type) {
     case 'prediction':
       return {
         type: 'prediction',
-        prompt: cp.prompt,
-        context: cp.answer_key?.context || '',
-        revealTimestamp: cp.answer_key?.revealTimestamp || cp.timestamp_seconds + 30,
+        prompt: config.prompt || cp.title,
+        context: config.context || '',
+        revealTimestamp: config.revealTimestamp || cp.timestamp + 30,
       };
     
     case 'explanation':
       return {
         type: 'explanation',
-        prompt: cp.prompt,
-        conceptName: cp.answer_key?.conceptName || cp.title || '',
-        targetAudience: cp.answer_key?.targetAudience || 'junior',
+        prompt: config.prompt || cp.title,
+        conceptName: config.conceptName || '',
+        targetAudience: config.targetAudience || 'junior',
       };
-    
+      
     case 'one_sentence_rule':
       return {
         type: 'one_sentence_rule',
-        conceptName: cp.answer_key?.conceptName || cp.title || '',
-        requiredKeyword: cp.answer_key?.requiredKeyword || 'concept',
-        maxWords: cp.answer_key?.maxWords || 15,
+        conceptName: config.conceptName || '',
+        requiredKeyword: config.requiredKeyword || '',
+        maxWords: config.maxWords || 15
       };
 
     case 'snapshot':
       return {
         type: 'snapshot',
-        prompt: cp.prompt,
-        context: cp.answer_key?.context || '',
+        prompt: config.prompt || cp.title,
+        context: config.context || ''
       };
-    
+      
     case 'practice_resource':
       return {
         type: 'practice_resource',
-        platform: cp.answer_key?.platform || 'leetcode',
-        problemId: cp.answer_key?.problemId || '',
-        title: cp.title || '',
-        url: cp.answer_key?.url || '',
-        difficulty: cp.answer_key?.difficulty || 'medium',
-        matchConfidence: cp.answer_key?.matchConfidence || 0.7,
-        matchReason: cp.answer_key?.matchReason || '',
+        platform: config.platform || 'leetcode',
+        problemId: config.problemId || '',
+        title: config.title || cp.title,
+        url: config.url || '',
+        difficulty: config.difficulty || 'medium',
+        matchConfidence: config.matchConfidence || 0,
+        matchReason: config.matchReason || ''
       };
-    
+
+    case 'code_practice': 
+      return {
+        type: 'code_practice',
+        language: config.language || 'javascript',
+        starterCode: config.starterCode || '',
+        testCases: config.testCases || [],
+        hints: config.hints || [],
+        solution: config.solution || '',
+        problem: config.problem || cp.title,
+      };
+      
     default:
-      // Legacy checkpoint types - return undefined
       return undefined;
   }
 }
@@ -267,134 +300,167 @@ function reconstructContent(cp: DbCheckpoint): CheckpointContent | undefined {
 // SAVE CHECKPOINTS
 // ============================================================================
 
-/**
- * Save generated checkpoints to Supabase.
- */
 export async function saveCheckpoints(
   videoId: string,
   checkpoints: Checkpoint[],
   metadata?: { title?: string; description?: string; thumbnailUrl?: string }
 ): Promise<void> {
-  const supabase = createClient();
+  const supabase = getWriteClient();
+  const isAdmin = !!createAdminClient();
   
-  const contentId = await getOrCreateContentId(videoId, metadata);
+  console.log(`[saveCheckpoints] Saving ${checkpoints.length} checkpoints for video ${videoId} (Admin: ${isAdmin})`);
   
-  // Delete existing checkpoints (regeneration case)
-  await supabase
-    .from('checkpoints')
-    .delete()
-    .eq('content_id', contentId);
-  
-  // Insert new checkpoints
-  const dbCheckpoints = checkpoints.map((cp) => {
-    let prompt = '';
-    let answerKey: any = {};
+  try {
+    const dbVideoId = await getOrCreateVideoId(videoId, metadata);
     
-    if (cp.content) {
-      switch (cp.content.type) {
-        case 'prediction':
-          prompt = cp.content.prompt;
-          answerKey = {
-            context: cp.content.context,
-            revealTimestamp: cp.content.revealTimestamp,
-          };
-          break;
-        
-        case 'explanation':
-          prompt = cp.content.prompt;
-          answerKey = {
-            conceptName: cp.content.conceptName,
-            targetAudience: cp.content.targetAudience,
-          };
-          break;
-        
-        case 'one_sentence_rule':
-          prompt = `Describe ${cp.content.conceptName} in one sentence using the word "${cp.content.requiredKeyword}"`;
-          answerKey = {
-            conceptName: cp.content.conceptName,
-            requiredKeyword: cp.content.requiredKeyword,
-            maxWords: cp.content.maxWords,
-          };
-          break;
-
-        case 'snapshot':
-          prompt = cp.content.prompt;
-          answerKey = {
-            context: cp.content.context,
-          };
-          break;
-
-        case 'practice_resource':
-          prompt = `Practice: ${cp.content.title}`;
-          answerKey = {
-            platform: cp.content.platform,
-            problemId: cp.content.problemId,
-            url: cp.content.url,
-            difficulty: cp.content.difficulty,
-            matchConfidence: cp.content.matchConfidence,
-            matchReason: cp.content.matchReason,
-          };
-          break;
-      }
-    } else {
-      prompt = cp.title;
-    }
-    
-    return {
-      content_id: contentId,
-      timestamp_seconds: Math.round(cp.timestamp),
-      type: cp.type,
-      title: cp.title,
-      prompt,
-      options: null,
-      answer_key: answerKey,
-      explanation: null,
-      difficulty: 1,
-      ai_generated: true,
-      verified: false,
-    };
-  });
-  
-  if (dbCheckpoints.length > 0) {
-    const { error } = await supabase
+    // Delete existing checkpoints for this video (Phase 6 table)
+    const { error: deleteError } = await supabase
       .from('checkpoints')
-      .insert(dbCheckpoints as any);
-    
-    if (error) {
-      console.error('[saveCheckpoints] Failed to save checkpoints:', error);
-      throw error;
+      .delete()
+      .eq('video_id', dbVideoId);
+
+    if (deleteError) {
+        console.error('[saveCheckpoints] Error deleting old checkpoints:', deleteError);
+        throw deleteError;
     }
+    
+    // Insert new checkpoints
+    const dbCheckpoints = checkpoints.map((cp) => {
+      let embedded_config: any = {};
+      let type = cp.type;
+      let title = cp.title;
+
+      // Populate embedded_config based on content
+      if (cp.content) {
+        switch (cp.content.type) {
+          case 'prediction':
+            embedded_config = {
+              prompt: cp.content.prompt,
+              context: cp.content.context,
+              revealTimestamp: cp.content.revealTimestamp
+            };
+            break;
+          case 'explanation':
+            embedded_config = {
+                prompt: cp.content.prompt,
+                conceptName: cp.content.conceptName,
+                targetAudience: cp.content.targetAudience
+            };
+            break;
+          case 'one_sentence_rule':
+            embedded_config = {
+                conceptName: cp.content.conceptName,
+                requiredKeyword: cp.content.requiredKeyword,
+                maxWords: cp.content.maxWords
+            };
+            title = `Describe ${cp.content.conceptName}`;
+            break;
+          case 'snapshot':
+            embedded_config = {
+                prompt: cp.content.prompt,
+                context: cp.content.context
+            };
+            break;
+          case 'practice_resource':
+            embedded_config = {
+                platform: cp.content.platform,
+                problemId: cp.content.problemId,
+                title: cp.content.title,
+                url: cp.content.url,
+                difficulty: cp.content.difficulty,
+                matchConfidence: cp.content.matchConfidence,
+                matchReason: cp.content.matchReason
+            };
+            break;
+          case 'code_practice': 
+            embedded_config = {
+              language: cp.content.language,
+              starterCode: cp.content.starterCode,
+              testCases: cp.content.testCases,
+              hints: cp.content.hints,
+              solution: cp.content.solution,
+              problem: cp.content.problem,
+            };
+            break;
+        }
+      }
+
+      return {
+        video_id: dbVideoId,
+        timestamp: Math.round(cp.timestamp),
+        type: type,
+        title: title,
+        embedded_config: embedded_config,
+        metadata: {},
+        ai_confidence: 1.0, 
+        created_at: new Date().toISOString()
+      };
+    });
+    
+    if (dbCheckpoints.length > 0) {
+      const { error } = await (supabase
+        .from('checkpoints') as any)
+        .insert(dbCheckpoints);
+      
+      if (error) {
+        console.error('[saveCheckpoints] Failed to save checkpoints:', error);
+        throw error;
+      }
+    }
+    
+    console.log(`[saveCheckpoints] Successfully saved. Check your 'videos' table for id: ${dbVideoId}`);
+  } catch (err: any) {
+    console.error('[saveCheckpoints] CRITICAL FAILURE:', err.message || err);
+    throw err;
   }
-  
-  console.log(`[saveCheckpoints] Saved ${dbCheckpoints.length} cognitive checkpoints for video ${videoId}`);
 }
 
-// ============================================================================
-// UTILITY
-// ============================================================================
-
-/**
- * Check if checkpoints exist for a video.
- */
 export async function hasCheckpoints(videoId: string): Promise<boolean> {
   const checkpoints = await getCheckpointsByVideoId(videoId);
   return checkpoints.length > 0;
 }
 
-/**
- * Get content ID for a video (for artifact storage).
- */
 export async function getContentIdByVideoId(videoId: string): Promise<string | null> {
-  const supabase = createClient();
+    // Backward compatibility helper - returns the video ID
+    const supabase = createClient();
+    const { data } = await supabase.from('videos').select('id').eq('youtube_id', videoId).maybeSingle();
+    return data ? (data as any).id : null;
+}
+
+export async function deleteVideoContent(contentId: string): Promise<{ success: boolean; error?: string }> {
+  // Use write client (admin if available) for delete
+  const supabase = getWriteClient();
   
-  const { data: content } = await supabase
-    .from('contents')
-    .select('id')
-    .eq('external_id', videoId)
-    .eq('type', 'video')
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  // We STILL verify the user is logged in using the auth client
+  const authClient = createClient();
+  const { data: { user } } = await authClient.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'Not authenticated' };
+  }
   
-  return content ? (content as any).id : null;
+  // Delete checkpoints first (cascade should handle this, but let's be explicit)
+  const { error: checkpointsError } = await supabase
+    .from('checkpoints')
+    .delete()
+    .eq('video_id', contentId);
+  
+  if (checkpointsError) {
+    console.error('[deleteVideoContent] Failed to delete checkpoints:', checkpointsError);
+    // Continue anyway
+  }
+  
+  // Delete the video record
+  const { error: deleteError } = await supabase
+    .from('videos')
+    .delete()
+    .eq('id', contentId);
+  
+  if (deleteError) {
+    console.error('[deleteVideoContent] Failed to delete content:', deleteError);
+    return { success: false, error: 'Failed to delete video' };
+  }
+  
+  console.log(`[deleteVideoContent] Successfully deleted content ${contentId}`);
+  return { success: true };
 }

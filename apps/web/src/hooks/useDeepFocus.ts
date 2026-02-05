@@ -120,8 +120,22 @@ export interface PracticeResourceContent {
   matchReason: string;
 }
 
+/**
+ * Code Practice
+ * Embedded code editor for hands-on coding practice.
+ */
+export interface CodePracticeContent {
+  type: 'code_practice';
+  language: string;
+  starterCode: string;
+  testCases: Array<{ input: unknown; expected: unknown; description?: string }>;
+  hints: string[];
+  solution: string;
+  problem: string;
+}
+
 /** Union of all checkpoint content types */
-export type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent;
+export type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent | CodePracticeContent;
 
 // ============================================================================
 // CHECKPOINT TYPE
@@ -132,7 +146,7 @@ export interface Checkpoint {
   /** Timestamp in seconds when checkpoint triggers */
   timestamp: number;
   /** Type of cognitive checkpoint */
-  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource';
+  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource' | 'code_practice';
   /** Display title for the checkpoint */
   title: string;
   /** Whether user has completed this checkpoint */

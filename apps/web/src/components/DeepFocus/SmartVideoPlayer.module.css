@@ -1,0 +1,121 @@
+/**
+ * SmartVideoPlayer Styles
+ * 
+ * Checkpoint-aware video player wrapper.
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #0f172a;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+
+/* Player Wrapper */
+.playerWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+/* Timeline Wrapper */
+.timelineWrapper {
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* Checkpoint Notification */
+.checkpointNotification {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.notificationContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.notificationIcon {
+  font-size: 1rem;
+}
+
+.notificationText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #f8fafc;
+  white-space: nowrap;
+}
+
+.skipButton {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(148, 163, 184, 0.9);
+  background: rgba(51, 65, 85, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.skipButton:hover {
+  background: rgba(51, 65, 85, 0.7);
+  color: #f8fafc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    border-radius: 0;
+  }
+
+  .timelineWrapper {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .checkpointNotification {
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    transform: none;
+  }
+
+  .notificationContent {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 8px;
+  }
+
+  .notificationText {
+    font-size: 0.8125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,8 @@
+@import '@pauser/ui/styles/tokens.css';
+@import '@pauser/ui/styles/globals.css';
+
+/* 
+ * Extension-specific styles
+ * Note: CheckpointsPanel uses Tailwind classes but Tailwind is not currently configured for the extension.
+ * Consider adding Tailwind config or using standard CSS here if needed.
+ */

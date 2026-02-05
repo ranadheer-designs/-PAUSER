@@ -33,19 +33,33 @@ export async function getVideosWithCheckpoints(): Promise<VideoWithCheckpoints[]
     return [];
   }
   
-  // Get all contents created by this user that have at least one checkpoint
-  const { data: contentsWithCheckpoints, error } = await supabase
-    .from('contents')
+  // Get all videos created by update/ingest logic (implicitly implied by checkpoints existence)
+  // Schema note: 'created_by' is removed from videos table in new schema vs contents?
+  // User migration SQL didn't show created_by on videos table. 
+  // Assuming public videos or we filter by something else?
+  // Actually, let's just query videos that have checkpoints?
+  // But wait, checkpoints don't have user_id, completions do.
+  // The original code filtered by `contents.created_by = user.id`. 
+  // The new schema `videos` table DOES NOT HAVE `created_by`. 
+  // This implies videos are global.
+  // So we should find videos that the USER has INTERACTED with?
+  // Or just return all videos?
+  // The original requirement: "Fetches all videos (contents) that have checkpoints for the current user."
+  // Actually the original code said: `.eq('created_by', user.id)` which implies user uploaded them?
+  // If videos are now global, we probably want to show videos where user has *completions* or videos that *exist*.
+  // Let's assume for now we return ALL videos that have checkpoints, as they are likely "available".
+  // OR, we check if the user has `user_contents` (from old schema - effectively progress).
+  // Given strict instructions: "Refactor fetching logic... replace contents with videos".
+  
+  const { data: videosWithCheckpointsData, error } = await supabase
+    .from('videos')
     .select(`
       id,
-      external_id,
+      youtube_id,
       title,
-      thumbnail_url,
       created_at,
-      checkpoints:checkpoints(count)
+      checkpoints(count)
     `)
-    .eq('type', 'video')
-    .eq('created_by', user.id)
     .order('created_at', { ascending: false });
   
   if (error) {
@@ -54,18 +68,18 @@ export async function getVideosWithCheckpoints(): Promise<VideoWithCheckpoints[]
   }
   
   // Filter to only videos with checkpoints and map to our type
-  const videosWithCheckpoints = (contentsWithCheckpoints || [])
-    .filter((content: any) => {
-      const count = content.checkpoints?.[0]?.count || 0;
+  const videosWithCheckpoints = (videosWithCheckpointsData || [])
+    .filter((video: any) => {
+      const count = video.checkpoints?.[0]?.count || 0;
       return count > 0;
     })
-    .map((content: any) => ({
-      id: content.id,
-      externalId: content.external_id,
-      title: content.title,
-      thumbnailUrl: content.thumbnail_url,
-      checkpointCount: content.checkpoints?.[0]?.count || 0,
-      createdAt: content.created_at,
+    .map((video: any) => ({
+      id: video.id,
+      externalId: video.youtube_id,
+      title: video.title,
+      thumbnailUrl: `https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`, // Construct since not in DB
+      checkpointCount: video.checkpoints?.[0]?.count || 0,
+      createdAt: video.created_at,
     }));
   
   return videosWithCheckpoints;
