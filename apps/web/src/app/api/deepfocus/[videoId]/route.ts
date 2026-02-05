@@ -67,7 +67,7 @@ export async function POST(
     // 4a. Update Video (Upsert to ensure it exists)
     // We need title/etc. ideally, but if not available we use placeholders or fetch from YouTube if we had that service.
     // For now we assume video might exist or we insert basic info.
-    const { error: videoError } = await supabase.from('videos').upsert({
+    const { error: videoError } = await (supabase.from('videos') as any).upsert({
       youtube_id: videoId,
       title: `Video ${videoId}`, // Ideally we'd fetch title
       duration: Math.ceil(duration),
@@ -87,7 +87,7 @@ export async function POST(
     // 4b. Save Checkpoints
     if (analysis.checkpointSuggestions.length > 0) {
         // First get the internal ID of the video
-        const { data: videoData } = await supabase.from('videos').select('id').eq('youtube_id', videoId).single();
+        const { data: videoData } = await (supabase.from('videos') as any).select('id').eq('youtube_id', videoId).single();
         
         if (videoData) {
             const checkpoints = analysis.checkpointSuggestions.map(cp => {
@@ -114,7 +114,7 @@ export async function POST(
                 };
             });
 
-            const { error: cpError } = await supabase.from('checkpoints').insert(checkpoints);
+            const { error: cpError } = await (supabase.from('checkpoints') as any).insert(checkpoints);
              if (cpError) {
                 if (cpError.code === '42501') {
                     console.error('[API] ❌ Permission Denied (42501) saving checkpoints.');

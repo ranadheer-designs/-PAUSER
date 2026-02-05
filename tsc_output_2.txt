@@ -1,0 +1,12 @@
+apps/web/src/app/api/deepfocus/[videoId]/route.ts(70,65): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { onConflict?: string | undefined; ignoreDuplicates?: boolean | undefined; count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ ...; }, ... 5 more ..., "POST">', gave the following error.
+    Argument of type '{ youtube_id: string; title: string; duration: number; transcript: TranscriptSegment[]; transcript_analysis: VideoAnalysis; updated_at: string; }' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { onConflict?: string | undefined; ignoreDuplicates?: boolean | undefined; count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<...>', gave the following error.
+    Object literal may only specify known properties, and 'youtube_id' does not exist in type 'never[]'.
+apps/web/src/app/api/deepfocus/[videoId]/route.ts(108,41): error TS2339: Property 'id' does not exist on type 'never'.
+apps/web/src/app/api/deepfocus/[videoId]/route.ts(117,82): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: never, options?: { count?: "exact" | "planned" | "estimated" | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "checkpoints", never, "POST">', gave the following error.
+    Argument of type '{ video_id: any; timestamp: number; type: "code_practice" | "quiz" | "practice" | "reflection"; title: string; context: string; embedded_config: any; }[]' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(values: never[], options?: { count?: "exact" | "planned" | "estimated" | undefined; defaultToNull?: boolean | undefined; } | undefined): PostgrestFilterBuilder<{ PostgrestVersion: "12"; }, never, never, null, "checkpoints", never, "POST">', gave the following error.
+    Argument of type '{ video_id: any; timestamp: number; type: "code_practice" | "quiz" | "practice" | "reflection"; title: string; context: string; embedded_config: any; }[]' is not assignable to parameter of type 'never[]'.
+      Type '{ video_id: any; timestamp: number; type: "code_practice" | "quiz" | "practice" | "reflection"; title: string; context: string; embedded_config: any; }' is not assignable to type 'never'.

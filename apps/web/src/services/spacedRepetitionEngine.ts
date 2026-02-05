@@ -67,14 +67,14 @@ export class SpacedRepetitionEngine {
 
     // 3. Save to database (review_cards)
     if (existingCard) {
-       await supabase.from('review_cards').update({
+       await (supabase.from('review_cards') as any).update({
          ease_factor: easeFactor,
          interval_days: interval,
          repetitions: repetitions,
          next_review: nextReviewDate.toISOString().split('T')[0] // DATE column
        } as any).eq('id', existingCard.id);
     } else {
-       await supabase.from('review_cards').insert({
+       await (supabase.from('review_cards') as any).insert({
          user_id: userId,
          checkpoint_id: checkpointId,
          ease_factor: easeFactor,

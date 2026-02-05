@@ -119,8 +119,8 @@ async function processVideoInBackground(
     
     // Update video record with processing complete status
     const supabase = createClient();
-    await supabase
-      .from('videos')
+    await (supabase
+      .from('videos') as any)
       .update({
         transcript_analysis: {
           status: 'complete',
@@ -136,8 +136,8 @@ async function processVideoInBackground(
     
     // Update status to failed
     const supabase = createClient();
-    await supabase
-      .from('videos')
+    await (supabase
+      .from('videos') as any)
       .update({
         transcript_analysis: {
           status: 'failed',
@@ -188,8 +188,8 @@ export async function POST(req: Request) {
     
     // Update video with duration info
     const supabase = createClient();
-    await supabase
-      .from('videos')
+    await (supabase
+      .from('videos') as any)
       .update({
         duration: videoInfo.duration,
         channel_name: videoInfo.channelName,
