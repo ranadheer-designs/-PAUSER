@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,6 +29,45 @@ export default function Hero({ onStart }: HeroProps) {
   const handleSignUp = () => {
     setAuthMode('signup');
     setShowAuthModal(true);
+  };
+
+  // Typing effect logic
+  const [text, setText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [loopNum, setLoopNum] = useState(0);
+  const [delta, setDelta] = useState(150);
+  const toRotate = ['happens', 'occurs', 'emerges', 'unfolds', 'takes place', 'arises'];
+  const period = 2000;
+
+  useEffect(() => {
+    let ticker = setInterval(() => {
+      tick();
+    }, delta);
+
+    return () => clearInterval(ticker);
+  }, [text, delta]);
+
+  const tick = () => {
+    let i = loopNum % toRotate.length;
+    let fullText = toRotate[i];
+    let updatedText = isDeleting ? fullText.substring(0, text.length - 1) : fullText.substring(0, text.length + 1);
+
+    setText(updatedText);
+
+    if (isDeleting) {
+      setDelta(prevDelta => prevDelta / 2);
+    }
+
+    if (!isDeleting && updatedText === fullText) {
+      setIsDeleting(true);
+      setDelta(period);
+    } else if (isDeleting && updatedText === '') {
+      setIsDeleting(false);
+      setLoopNum(loopNum + 1);
+      setDelta(150);
+    } else {
+      setDelta(100); // Typing speed
+    }
   };
 
   // Parallax Scroll logic
@@ -114,8 +153,17 @@ export default function Hero({ onStart }: HeroProps) {
            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', position: 'relative', zIndex: 10 }}
         >
           <h1 className={styles.title}>
-            Capture understanding at <br />
-            <span className={styles.highlightText}>the moment it happens.</span>
+            Capture understanding as it <br />
+            <span 
+              className={styles.highlightText} 
+              style={{ 
+                fontFamily: 'var(--font-instrument-serif)', 
+                fontStyle: 'italic',
+                fontWeight: 400
+              }}
+            >
+              {text}
+            </span>
           </h1>
           
           <p className={styles.subtitle}>
