@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       try {
         await resend.emails.send({
           from: 'Pauser <onboarding@resend.dev>', // Note: This is the default Resend testing address. Replace with your verified domain address in production.
-          to: process.env.CONTACT_EMAIL || 'ranadheerpothula33@gmail.com',
+          to: process.env.CONTACT_EMAIL || 'prabhasghat@gmail.com',
           subject: `New Feedback from ${name}`,
           text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
         });
