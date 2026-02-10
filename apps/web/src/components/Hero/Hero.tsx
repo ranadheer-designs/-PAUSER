@@ -153,8 +153,8 @@ export default function Hero({ onStart }: HeroProps) {
            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', position: 'relative', zIndex: 10 }}
         >
           <h1 className={styles.title}>
-            Capture understanding as it <br />
-            <span 
+            Capture understanding <br />
+            as it <span 
               className={styles.highlightText} 
               style={{ 
                 fontFamily: 'var(--font-instrument-serif)', 
