@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/await-thenable */
 'use server';
 
 /**
