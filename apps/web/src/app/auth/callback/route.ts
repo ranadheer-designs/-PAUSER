@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { getURL } from '@/utils/getURL';
 
 /**
  * Auth Callback Route

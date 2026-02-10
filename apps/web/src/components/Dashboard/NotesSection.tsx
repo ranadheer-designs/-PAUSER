@@ -9,7 +9,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { getNotesWithVideos, deleteNote } from '@/actions/notes';
-import { AIService } from '@pauser/common';
 import type { NoteWithVideo, OrganizedNotesSection } from '@pauser/common';
 import { AddVideoModal } from './AddVideoModal';
 import { generateNotesHash, getCachedOrganizedNotes, setCachedOrganizedNotes } from '@/utils/organizedNotesCache';
@@ -150,23 +149,20 @@ export function NotesSection() {
     }));
 
     try {
-      const openRouterKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || '';
-      const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
-      const apiKey = openRouterKey || geminiKey;
+      // Use Server Action
+      const { organizeNotesAction } = await import('@/actions/organizedNotes');
       
-      if (!apiKey) throw new Error('API key not configured');
-
       console.log('[NotesSection] Organizing notes for video:', videoId);
 
-      const aiService = new AIService({
-        enabled: true,
-        model: 'meta-llama/llama-3.3-70b-instruct:free',
-        apiKey,
-      });
+      const response = await organizeNotesAction(notesForHash);
 
-      const result = await aiService.organizeNotes({ notes: notesForHash });
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'AI could not organize notes');
+      }
 
-      if (!result || result.sections.length === 0) throw new Error('AI could not organize notes');
+      const result = response.data;
+
+      if (result.sections.length === 0) throw new Error('AI could not organize notes');
 
       // Cache result
       setCachedOrganizedNotes(videoId, {

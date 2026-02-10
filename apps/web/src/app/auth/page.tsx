@@ -16,6 +16,7 @@
 import { useState, useCallback, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import { getURL } from '@/utils/getURL';
 import { Logo } from '@/components/Common/Logo';
 import styles from './page.module.css';
 

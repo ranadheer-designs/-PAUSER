@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/utils/supabase/client';
+import { getURL } from '@/utils/getURL';
 import styles from './AuthModal.module.css';
 
 interface AuthModalProps {

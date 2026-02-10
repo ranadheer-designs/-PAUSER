@@ -13,7 +13,6 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { AIService } from '@pauser/common';
 import type { Note, OrganizedNotesResult, OrganizedNotesSection } from '@pauser/common';
 import { 
   generateNotesHash, 
@@ -93,33 +92,18 @@ export function useOrganizedNotes({
     setError(null);
 
     try {
-      // Get API keys from environment
-      const openRouterKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || '';
-      const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || '';
+      // Call Server Action instead of local AIService
+      const { organizeNotesAction } = await import('@/actions/organizedNotes');
       
-      if (!openRouterKey && !geminiKey) {
-        throw new Error('No AI API key configured');
+      console.log('[useOrganizedNotes] Calling server action with', notes.length, 'notes');
+
+      const response = await organizeNotesAction(notes);
+
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'AI returned no results - try again later');
       }
 
-      console.log('[useOrganizedNotes] Starting organization with', notes.length, 'notes');
-
-      const aiService = new AIService({
-        enabled: true,
-        model: 'meta-llama/llama-3.3-70b-instruct:free',
-        apiKey: openRouterKey || geminiKey,
-      });
-
-      const aiResult = await aiService.organizeNotes({
-        notes: notes.map(n => ({
-          id: n.id,
-          body: n.body,
-          startTimeSeconds: n.startTimeSeconds,
-        })),
-      });
-
-      if (!aiResult) {
-        throw new Error('AI returned no results - try again later');
-      }
+      const aiResult = response.data;
 
       if (aiResult.sections.length === 0) {
         throw new Error('AI could not categorize notes into sections');

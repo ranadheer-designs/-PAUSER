@@ -88,5 +88,6 @@ export type {
   GenerateAdaptiveCheckpointsInput,
   AdaptiveCheckpointGenerationResult,
   UserLearningContext,
+  OrganizedNotesAIResult,
 } from './ai/types';
 export * from './ai/schemas';
