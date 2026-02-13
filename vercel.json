@@ -19,10 +19,6 @@
     {
       "src": "/api/transcript",
       "dest": "api/transcript.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/apps/web/$1"
     }
   ]
 }

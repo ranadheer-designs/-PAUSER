@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
-export const dynamic = 'force-dynamic';
-
 /**
  * API endpoint for fetching user analytics stats
  * Used by the Chrome extension popup to display streak and cards due
