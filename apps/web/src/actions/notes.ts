@@ -191,7 +191,7 @@ export async function upsertNote(
   
   let contentUuid: string;
   
-  // Try to find existing content by youtube_id (formerly external_id)
+  // Try to find existing content by youtube_id for the current user (RLS scopes automatically)
   const { data: existingContent } = await (supabase as any)
     .from('videos')
     .select('id')
@@ -220,7 +220,6 @@ export async function upsertNote(
     const metadata = await fetchYouTubeMetadata(note.contentId);
     
     const videoTitle = metadata?.title || `Video ${note.contentId}`;
-    // thumbnail not in videos table anymore, just title etc
     
     console.log('[upsertNote] Fetched YouTube metadata:', { title: videoTitle });
     
@@ -228,6 +227,7 @@ export async function upsertNote(
       .from('videos')
       .insert({
         youtube_id: note.contentId,
+        user_id: user.id,
         title: videoTitle,
         description: null,
       })

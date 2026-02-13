@@ -23,8 +23,8 @@ export const videoProcessingQueue = new Queue('video-processing', {
 // Initialize UI/AI services
 const aiService = new AIService({
   enabled: true,
-  model: 'google/gemini-2.0-flash-exp:free', // Default model
-  apiKey: process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY || '',
+  model: 'meta-llama/llama-3.3-70b-instruct:free', // Default model
+  apiKey: process.env.OPENROUTER_API_KEY || process.env.GROQ_API_KEY || '',
 });
 
 // Mock checkpoint generator (until moved to common)

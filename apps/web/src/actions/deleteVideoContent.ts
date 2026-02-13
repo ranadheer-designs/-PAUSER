@@ -24,17 +24,16 @@ export async function deleteVideoContent(contentId: string): Promise<{ success: 
     return { success: false, error: 'Not authenticated' };
   }
   
-  // Verify the content exists
-  // Note: New schema does NOT have created_by on videos, so we cannot check ownership easily.
-  // Assuming for now that deletion is allowed for authenticated users (or this should be admin only).
+  // Verify the content exists and belongs to this user (defense-in-depth + RLS)
   const { data: video, error: fetchError } = await supabase
     .from('videos')
     .select('id')
     .eq('id', contentId)
+    .eq('user_id', user.id)
     .single();
   
   if (fetchError || !video) {
-    console.error('[deleteVideoContent] Video not found:', fetchError);
+    console.error('[deleteVideoContent] Video not found or not owned by user:', fetchError);
     return { success: false, error: 'Video not found' };
   }
   
@@ -49,11 +48,12 @@ export async function deleteVideoContent(contentId: string): Promise<{ success: 
     // Continue anyway - content deletion might still work
   }
   
-  // Delete the video record
+  // Delete the video record (user_id check for defense-in-depth)
   const { error: deleteError } = await supabase
     .from('videos')
     .delete()
-    .eq('id', contentId);
+    .eq('id', contentId)
+    .eq('user_id', user.id);
   
   if (deleteError) {
     console.error('[deleteVideoContent] Failed to delete content:', deleteError);

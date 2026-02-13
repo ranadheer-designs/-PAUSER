@@ -25,6 +25,7 @@ import { OneSentenceRuleCheckpoint } from './OneSentenceRuleCheckpoint';
 import { SnapshotCheckpoint } from './SnapshotCheckpoint';
 import { PracticeCheckpoint } from './PracticeCheckpoint';
 import { CodePracticeCheckpoint } from './CodePracticeCheckpoint';
+import { ConceptQuizCheckpoint } from './ConceptQuizCheckpoint';
 import { createArtifact } from '@/actions/artifactActions';
 import type { 
   CheckpointContent, 
@@ -33,7 +34,8 @@ import type {
   OneSentenceRuleContent,
   SnapshotContent,
   PracticeResourceContent,
-  CodePracticeContent
+  CodePracticeContent,
+  ConceptQuizContent
 } from '@/hooks/useDeepFocus';
 
 interface CheckpointOverlayProps {
@@ -296,6 +298,14 @@ export function CheckpointOverlay({
             onSaveArtifact={handleSaveCodeArtifact}
           />
         );
+
+      case 'concept_quiz':
+         return (
+             <ConceptQuizCheckpoint
+                content={content as ConceptQuizContent}
+                onComplete={handleCheckpointComplete}
+             />
+         );
       
       default:
         // Unknown type fallback
@@ -360,6 +370,7 @@ function getCheckpointTypeLabel(type: string): string {
     case 'snapshot': return 'Understanding Snapshot';
     case 'code_practice': return 'Coding Practice';
     case 'practice_resource': return 'Practice Resource';
+    case 'concept_quiz': return 'Concept Quiz';
     default: return 'Checkpoint';
   }
 }

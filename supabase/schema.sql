@@ -35,7 +35,8 @@ create table public.profiles (
 -- ============================================================================
 create table public.videos (
   id uuid default uuid_generate_v4() primary key,
-  youtube_id text unique not null,
+  user_id uuid references auth.users not null,
+  youtube_id text not null,
   title text not null,
   description text,
   duration integer default 0,
@@ -43,7 +44,9 @@ create table public.videos (
   transcript jsonb,
   transcript_analysis jsonb,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  
+  unique(user_id, youtube_id)
 );
 
 -- ============================================================================
@@ -163,9 +166,14 @@ alter table public.checkpoint_analytics enable row level security;
 create policy "Users can see own profile" on public.profiles for select using (auth.uid() = id);
 create policy "Users can update own profile" on public.profiles for update using (auth.uid() = id);
 
--- Videos/Checkpoints (Public read)
-create policy "Any authenticated user can read videos" on public.videos for select using (auth.role() = 'authenticated');
-create policy "Any authenticated user can read checkpoints" on public.checkpoints for select using (auth.role() = 'authenticated');
+-- Videos (User-scoped)
+create policy "Users can read own videos" on public.videos for select using (auth.uid() = user_id);
+create policy "Users can insert own videos" on public.videos for insert with check (auth.uid() = user_id);
+create policy "Users can update own videos" on public.videos for update using (auth.uid() = user_id);
+create policy "Users can delete own videos" on public.videos for delete using (auth.uid() = user_id);
+
+-- Checkpoints (scoped through video ownership)
+create policy "Users can read checkpoints for own videos" on public.checkpoints for select using (exists (select 1 from public.videos v where v.id = video_id and v.user_id = auth.uid()));
 
 -- User Data
 create policy "Users manage own completions" on public.checkpoint_completions for all using (auth.uid() = user_id);

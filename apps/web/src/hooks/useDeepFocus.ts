@@ -134,8 +134,19 @@ export interface CodePracticeContent {
   problem: string;
 }
 
+/**
+ * Concept Quiz
+ * Multiple choice question to verify understanding.
+ */
+export interface ConceptQuizContent {
+  type: 'concept_quiz';
+  question: string;
+  options: Array<{ id: string; text: string; isCorrect: boolean }>;
+  explanation: string;
+}
+
 /** Union of all checkpoint content types */
-export type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent | CodePracticeContent;
+export type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent | CodePracticeContent | ConceptQuizContent;
 
 // ============================================================================
 // CHECKPOINT TYPE
@@ -146,7 +157,7 @@ export interface Checkpoint {
   /** Timestamp in seconds when checkpoint triggers */
   timestamp: number;
   /** Type of cognitive checkpoint */
-  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource' | 'code_practice';
+  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource' | 'code_practice' | 'concept_quiz';
   /** Display title for the checkpoint */
   title: string;
   /** Whether user has completed this checkpoint */

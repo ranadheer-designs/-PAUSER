@@ -1,0 +1,9 @@
+Testing alternatives for video: yrLPuuhTXxA
+
+--- Testing youtube-transcript (Method 2) ---
+SUCCESS Method 2: 0 segments.
+
+--- Testing youtube-transcript-api (Node Port) ---
+Create import type: function
+Export keys: 
+Failed new YTApi(): client not fully initialized!

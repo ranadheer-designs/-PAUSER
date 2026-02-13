@@ -20,7 +20,7 @@ import {
 export interface AIConfig {
   /** Whether AI features are globally enabled */
   enabled: boolean;
-  /** The model identifier (e.g., 'google/gemini-2.0-flash-exp:free') */
+  /** The model identifier (e.g., 'tngtech/deepseek-r1t2-chimera:free') */
   model: string;
   /** API Key (OpenRouter or Google) */
   apiKey: string;

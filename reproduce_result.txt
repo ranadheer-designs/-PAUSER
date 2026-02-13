@@ -1,0 +1,56 @@
+Testing DirectFetch for video: yrLPuuhTXxA
+[TranscriptExtractor] DirectFetch: Fetching page for yrLPuuhTXxA...
+Response status: 200
+[TranscriptExtractor] DirectFetch: Page fetched, length: 1164933
+Cookies found (getSetCookie): 7
+Prepared Cookie Header: __Secure-YNID=15.YT=bWl4uE_y6H1ZUcqOyKLK2eWVRHJ0HEoQLR0ZiM6SoimeZD_7HL9WQPD53qMNFyLx_NxZx9fBWIlUMql3m3mpZrnnJTf_y968yvg2OyXWF5n8jb9LrFWc5Hpu5NTWkDB7N-tqVyutNIVxZvD3aWylJQzRDW3nERjo_6cQ-6Kd8U8hcGSLlBYoMm28OB-DBlLGhfhOOK3MNQupN5HXIuj98euNIgqNtfIlSni_Gce4X1VsuktFHfH17td4hT1N07hIw_pNNKHO36E7QYQ_adV2afrh6inkM_9HeZPKkOgoQXRo9F1pplxm8AEfTblcfrH6WM2Tio3zDESxD7YvOeQycw; GPS=1; YSC=4uF91HZSaNk; __Secure-ROLLOUT_TOKEN=CKj2r5uauNWLBxCgoL_v1dSSAxigoL_v1dSSAw%3D%3D; __Secure-YEC=; VISITOR_INFO1_LIVE=zXjLMetsmO0; VISITOR_PRIVACY_METADATA=CgJJThIEGgAgIg%3D%3D
+[TranscriptExtractor] DirectFetch: Parsed 1 tracks.
+[TranscriptExtractor] DirectFetch: URL: https://www.youtube.com/api/timedtext?v=yrLPuuhTXxA&ei=vieOafSjFZnc3LUPovKewAk&caps=asr&opi=11249672...
+
+--- Testing Variation: Original ---
+Status: 200
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"0","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:26 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 0
+FAILURE with Original: 0 bytes
+
+--- Testing Variation: fmt=xml ---
+Status: 200
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"0","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:27 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 0
+FAILURE with fmt=xml: 0 bytes
+
+--- Testing Variation: fmt=srv3 ---
+Status: 200
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"0","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:27 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 0
+FAILURE with fmt=srv3: 0 bytes
+
+--- Testing Variation: fmt=json3 ---
+Status: 200
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"0","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:27 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 0
+FAILURE with fmt=json3: 0 bytes
+
+--- Testing Variation: Original + Client Headers ---
+Status: 200
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"0","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:27 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 0
+FAILURE with Original + Client Headers: 0 bytes
+
+--- Testing Variation: Original - No EI ---
+Status: 404
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"1910","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:27 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 1906
+SUCCESS with Original - No EI! Preview: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1
+
+--- Testing Variation: fmt=json3 - No EI ---
+Status: 404
+Headers: {"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","cache-control":"no-cache, must-revalidate","content-length":"1924","content-type":"text/html; charset=UTF-8","date":"Thu, 12 Feb 2026 19:19:27 GMT","expires":"Fri, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","server":"video-timedtext","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-xss-protection":"0"}
+Length: 1920
+SUCCESS with fmt=json3 - No EI! Preview: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1

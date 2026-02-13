@@ -1,0 +1,4 @@
+[TranscriptExtractor] Starting extraction for video: dQw4w9WgXcQ
+[TranscriptExtractor] Method 1: Trying Python script (youtube-transcript-api)...
+[TranscriptExtractor] Found python script at: C:\Users\shobh\Downloads\PAUSER\scripts\transcript.py
+[TranscriptExtractor] Method 1 Success: 61 segments found.

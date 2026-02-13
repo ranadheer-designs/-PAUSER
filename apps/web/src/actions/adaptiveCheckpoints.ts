@@ -4,7 +4,7 @@
 /**
  * Adaptive Checkpoint Generation Action
  * 
- * Phase 2: Context-aware, AI-powered checkpoint generation using Claude/Gemini.
+ * Phase 2: Context-aware, AI-powered checkpoint generation using Groq/OpenRouter.
  * Generates intelligent checkpoints that:
  * 1. Appear at perfect timing (natural break points)
  * 2. Match user's skill level
@@ -43,19 +43,19 @@ export interface AdaptiveCheckpointResult {
  */
 function createAIService(): AIService | null {
   const openRouterKey = process.env.OPENROUTER_API_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
 
-  if (!openRouterKey && !geminiKey) {
+  if (!openRouterKey && !groqKey) {
     console.warn('[AdaptiveCheckpoints] No AI API keys configured');
     return null;
   }
 
   return new AIService({
     enabled: true,
-    model: 'google/gemini-2.0-flash-exp:free',
+    model: 'meta-llama/llama-3.3-70b-instruct:free',
     apiKey: openRouterKey || '',
     baseUrl: 'https://openrouter.ai/api/v1',
-    geminiApiKey: geminiKey,
+    groqApiKey: groqKey,
   });
 }
 
@@ -115,6 +115,18 @@ function analyzeTranscriptStructure(transcript: string, videoDuration: number) {
  * @param options - Video and user context for checkpoint generation
  * @returns Adaptive checkpoint result with checkpoints array
  */
+/**
+ * Generate adaptive checkpoints for a video using AI analysis.
+ * 
+ * @param options - Video and user context for checkpoint generation
+ * @returns Adaptive checkpoint result with checkpoints array
+ */
+/**
+ * Generate adaptive checkpoints for a video using AI analysis.
+ * 
+ * @param options - Video and user context for checkpoint generation
+ * @returns Adaptive checkpoint result with checkpoints array
+ */
 export async function generateAdaptiveCheckpoints(
   options: GenerateAdaptiveCheckpointsOptions
 ): Promise<AdaptiveCheckpointResult> {
@@ -132,18 +144,103 @@ export async function generateAdaptiveCheckpoints(
     };
   }
 
-  // Create AI service
-  const aiService = createAIService();
-  if (!aiService) {
-    return {
-      success: false,
-      checkpoints: [],
-      metadata: null,
-      error: 'AI service not configured',
-    };
-  }
-
   try {
+    // Check if Groq is available for V2 generation
+    if (process.env.GROQ_API_KEY) {
+      console.log('[AdaptiveCheckpoints] Using Groq V2 "Ultra-Refined" Generation System');
+      const { generatePerfectCheckpoints } = await import('../services/checkpointGeneratorV2');
+      
+      const transcriptAnalysis = analyzeTranscriptStructure(transcript, videoDuration); // This returns segments
+      
+      // Map inputs to V2 expected format
+      const v2Metadata = {
+        title: videoTitle,
+        duration: videoDuration,
+        domain: transcriptAnalysis.domain,
+        estimatedLevel: transcriptAnalysis.detectedSkillLevel
+      };
+
+      // Calculate partial user profile if available
+      let averageScore = 0;
+      if (pastPerformance) {
+        const scores = Object.values(pastPerformance).map(p => p.completionRate);
+        if (scores.length > 0) {
+          averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+        }
+      }
+
+      // Determine preferred difficulty from learning history if possible
+      let preferredDifficulty: 'beginner' | 'intermediate' | 'advanced' = 'intermediate';
+      if (learningHistory?.skillProgression) {
+        // skillProgression values are 'novice' | 'intermediate' | 'advanced'
+        // We map 'novice' to 'beginner'
+        const levels = Object.values(learningHistory.skillProgression);
+        if (levels.includes('advanced')) preferredDifficulty = 'advanced';
+        else if (levels.includes('novice')) preferredDifficulty = 'beginner';
+      }
+
+      const v2UserProfile = userId ? {
+        averageScore: averageScore,
+        preferredDifficulty: preferredDifficulty,
+        strugglingTopics: [] // Default to empty as we can't easily derive it from current types
+      } : null;
+
+      // Prepare transcript for V2 (needs text property)
+      // The user's code handles array or string, but array of objects with 'text' is best.
+      const v2Transcript = transcriptAnalysis.segments.map(s => ({
+        start: s.startTime,
+        text: s.topics.join('. ')
+      }));
+
+      // Call V2 Generator
+      const v2Result = await generatePerfectCheckpoints(v2Transcript, v2Metadata, v2UserProfile as any);
+
+      if (v2Result && v2Result.success) {
+        console.log(`[AdaptiveCheckpoints] V2 System generated ${v2Result.checkpoints?.length} checkpoints`); // removed score access if stats is used
+
+        
+        // Map V2 checkpoints to our Schema format
+        // The V2 prompt output puts `learningObjective` at top level, Schema expects it in `metadata`
+        const mappedCheckpoints = v2Result.checkpoints.map((cp: any) => ({
+            ...cp,
+            type: cp.type === 'COMPREHENSION_QUIZ' ? 'CONCEPT_QUIZ' : cp.type,
+            // Ensure priority is uppercase
+            priority: cp.priority?.toUpperCase() || 'MEDIUM',
+            // Schema expects metadata object
+            metadata: {
+                ...cp.metadata,
+                learningObjective: cp.learningObjective || cp.metadata?.learningObjective || 'Objective'
+            }
+        }));
+
+        return {
+            success: true,
+            checkpoints: mappedCheckpoints,
+            metadata: {
+                detectedDomain: ((v2Result as any).analysis?.domain || transcriptAnalysis.domain) as any, // Cast to enum
+                subDomain: (v2Result as any).analysis?.subDomain,
+                skillLevel: ((v2Result as any).analysis?.skillLevel || 'intermediate') as any,
+                totalCheckpoints: v2Result.metrics?.checkpointCount || mappedCheckpoints.length,
+                estimatedTotalPracticeTime: v2Result.metrics?.estimatedPracticeTime || '15 minutes', 
+                aiConfidence: (v2Result.metrics?.qualityScore || 80) / 100
+            }
+        };
+      } else {
+        console.warn('[AdaptiveCheckpoints] V2 System failed or returned empty, falling back...');
+      }
+    }
+
+    // Fallback to original logic (using AIService) if V2 failed or Groq key missing
+    const aiService = createAIService();
+    if (!aiService) {
+      return {
+        success: false,
+        checkpoints: [],
+        metadata: null,
+        error: 'AI service not configured',
+      };
+    }
+
     // Analyze transcript structure
     const transcriptAnalysis = analyzeTranscriptStructure(transcript, videoDuration);
 
@@ -183,16 +280,17 @@ export async function generateAdaptiveCheckpoints(
       checkpoints: result.checkpoints,
       metadata: result.analysisMetadata,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('[AdaptiveCheckpoints] Error generating checkpoints:', error);
     return {
       success: false,
       checkpoints: [],
       metadata: null,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error.message || 'Unknown error',
     };
   }
 }
+
 
 /**
  * Convert adaptive checkpoints to the format expected by useDeepFocus hook

@@ -40,12 +40,19 @@ interface PredictionContent { type: 'prediction'; prompt: string; context: strin
 interface ExplanationContent { type: 'explanation'; prompt: string; conceptName: string; targetAudience: 'junior' | 'past_self' | 'friend'; }
 interface OneSentenceRuleContent { type: 'one_sentence_rule'; conceptName: string; requiredKeyword: string; maxWords: number; }
 
-export type CheckpointContent = SnapshotContent | PredictionContent | ExplanationContent | OneSentenceRuleContent | PracticeResourceContent | CodePracticeContent;
+export interface ConceptQuizContent {
+  type: 'concept_quiz';
+  question: string;
+  options: Array<{ id: string; text: string; isCorrect: boolean }>;
+  explanation: string;
+}
+
+export type CheckpointContent = SnapshotContent | PredictionContent | ExplanationContent | OneSentenceRuleContent | PracticeResourceContent | CodePracticeContent | ConceptQuizContent;
 
 export interface GeneratedCheckpoint {
   id: string;
   timestamp: number;
-  type: 'snapshot' | 'prediction' | 'explanation' | 'one_sentence_rule' | 'practice_resource' | 'code_practice';
+  type: 'snapshot' | 'prediction' | 'explanation' | 'one_sentence_rule' | 'practice_resource' | 'code_practice' | 'concept_quiz';
   title: string;
   completed: boolean;
   content: CheckpointContent;
@@ -76,13 +83,21 @@ export async function generateCheckpoints(
     // We consider it a valid transcript if we have > 5 segments
     if (!extractionResult.segments || extractionResult.segments.length < 5) {
       console.log('[Checkpoint] No valid transcript available - using fallback');
-      return generateFallbackCheckpoints(videoDuration, videoTitle);
+      const reason = extractionResult.error ? `ERR: ${extractionResult.error.substring(0, 15)}` : 'ERR: No Script';
+      return generateFallbackCheckpoints(videoDuration, videoTitle, reason);
     }
     
     const transcriptSegments = extractionResult.segments;
     
     // 2. Intelligent Analysis
     console.log('[Checkpoint] Analyzing transcript...');
+    
+    // Check for API Keys before analysis
+    if (!process.env.GROQ_API_KEY && !process.env.OPENROUTER_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+        console.warn('[Checkpoint] No AI API Keys configured');
+        return generateFallbackCheckpoints(videoDuration, videoTitle, 'ERR: No API Keys');
+    }
+    
     const analysis = await analyzeTranscript(transcriptSegments, videoDuration);
     
     // 3. Convert Analysis to Checkpoints
@@ -158,7 +173,7 @@ export async function generateCheckpoints(
                      id: `cp-auto-${idx}`,
                      timestamp: bt,
                      type: 'snapshot',
-                     title: 'Reflection Point',
+                     title: 'Reflection Point (Auto)',
                      completed: false,
                      content: {
                          type: 'snapshot',
@@ -172,7 +187,7 @@ export async function generateCheckpoints(
     
     // If absolutely nothing, time-based fallback
     if (checkpoints.length === 0) {
-        return generateFallbackCheckpoints(videoDuration, videoTitle);
+        return generateFallbackCheckpoints(videoDuration, videoTitle, 'ERR: Analysis Empty');
     }
     
     // Sort
@@ -183,15 +198,17 @@ export async function generateCheckpoints(
 
   } catch (error) {
     console.error('[Checkpoint] Generation error:', error);
-    return generateFallbackCheckpoints(videoDuration, videoTitle);
+    const msg = error instanceof Error ? error.message : 'Unknown';
+    return generateFallbackCheckpoints(videoDuration, videoTitle, `ERR: ${msg.substring(0, 15)}`);
   }
 }
+
 
 /**
  * Generate fallback checkpoints when reliable transcript processing fails.
  */
-function generateFallbackCheckpoints(duration: number, title: string): GeneratedCheckpoint[] {
-  console.log('[Checkpoint] Using fallback generation (time-based)');
+function generateFallbackCheckpoints(duration: number, title: string, debugReason: string = ''): GeneratedCheckpoint[] {
+  console.log('[Checkpoint] Using fallback generation (time-based)', debugReason);
   
   const checkpoints: GeneratedCheckpoint[] = [];
   // For long videos (over 10m), every 5 mins. For short, just one in middle.
@@ -206,7 +223,7 @@ function generateFallbackCheckpoints(duration: number, title: string): Generated
       id: `fallback-snap-${i}-${Date.now()}`,
       timestamp,
       type: 'snapshot',
-      title: 'Understanding Snapshot',
+      title: `Understanding Snapshot${debugReason ? ` (${debugReason})` : ''}`,
       completed: false,
       content: {
         type: 'snapshot',

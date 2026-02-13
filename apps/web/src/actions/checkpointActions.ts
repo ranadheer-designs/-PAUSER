@@ -86,12 +86,20 @@ interface CodePracticeContent {
   problem: string;
 }
 
-type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent | CodePracticeContent;
+/** Concept Quiz content */
+interface ConceptQuizContent {
+  type: 'concept_quiz';
+  question: string;
+  options: Array<{ id: string; text: string; isCorrect: boolean }>;
+  explanation: string;
+}
+
+type CheckpointContent = PredictionContent | ExplanationContent | OneSentenceRuleContent | SnapshotContent | PracticeResourceContent | CodePracticeContent | ConceptQuizContent;
 
 export interface Checkpoint {
   id: string;
   timestamp: number;
-  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource' | 'code_practice';
+  type: 'prediction' | 'explanation' | 'one_sentence_rule' | 'snapshot' | 'practice_resource' | 'code_practice' | 'concept_quiz';
   title: string;
   completed: boolean;
   content?: CheckpointContent;
@@ -139,11 +147,17 @@ export async function getOrCreateVideoId(
 ): Promise<string> {
   const supabase = getWriteClient();
   
-  // Try finding existing video
+  // Get current user for scoping
+  const authClient = createClient();
+  const { data: { user } } = await authClient.auth.getUser();
+  if (!user) throw new Error('Authentication required to manage videos');
+  
+  // Try finding existing video for THIS user
   const { data: existingVideo } = await supabase
     .from('videos')
     .select('id')
     .eq('youtube_id', videoId)
+    .eq('user_id', user.id)
     .maybeSingle();
   
   if (existingVideo) {
@@ -160,11 +174,12 @@ export async function getOrCreateVideoId(
     return (existingVideo as any).id;
   }
   
-  // Insert new video
+  // Insert new video scoped to this user
     const { data: newVideo, error } = await (supabase
     .from('videos') as any)
     .insert({
       youtube_id: videoId,
+      user_id: user.id,
       title: metadata?.title || `Video ${videoId}`,
       description: metadata?.description || null,
       duration: 0
@@ -192,9 +207,9 @@ export async function updateVideoMetadata(
 // ============================================================================
 
 export async function getCheckpointsByVideoId(videoId: string): Promise<Checkpoint[]> {
-  const supabase = createClient(); // Use standard client for reads
+  const supabase = createClient(); // Use standard client for reads (RLS will scope to user)
   
-  // Find video ID
+  // Find video ID for current user (RLS ensures only own videos are visible)
   const { data: video } = await supabase
     .from('videos')
     .select('id')
@@ -203,7 +218,7 @@ export async function getCheckpointsByVideoId(videoId: string): Promise<Checkpoi
   
   if (!video) return [];
   
-  // Fetch checkpoints
+  // Fetch checkpoints (RLS ensures only checkpoints for own videos)
   const { data: checkpoints, error } = await supabase
     .from('checkpoints')
     .select('*')
@@ -290,6 +305,15 @@ function reconstructContent(cp: any): CheckpointContent | undefined {
         solution: config.solution || '',
         problem: config.problem || cp.title,
       };
+
+    case 'concept_quiz':
+      return {
+        type: 'concept_quiz',
+        question: config.question || cp.title,
+        options: config.options || [],
+        explanation: config.explanation || '',
+      };
+      
       
     default:
       return undefined;
@@ -382,6 +406,13 @@ export async function saveCheckpoints(
               problem: cp.content.problem,
             };
             break;
+          case 'concept_quiz':
+             embedded_config = {
+                question: cp.content.question,
+                options: cp.content.options,
+                explanation: cp.content.explanation
+             };
+             break;
         }
       }
 
@@ -395,8 +426,8 @@ export async function saveCheckpoints(
         ai_confidence: 1.0, 
         created_at: new Date().toISOString()
       };
-    });
-    
+    });  
+  
     if (dbCheckpoints.length > 0) {
       const { error } = await (supabase
         .from('checkpoints') as any)
@@ -421,7 +452,7 @@ export async function hasCheckpoints(videoId: string): Promise<boolean> {
 }
 
 export async function getContentIdByVideoId(videoId: string): Promise<string | null> {
-    // Backward compatibility helper - returns the video ID
+    // Backward compatibility helper - returns the video ID (RLS scopes to current user)
     const supabase = createClient();
     const { data } = await supabase.from('videos').select('id').eq('youtube_id', videoId).maybeSingle();
     return data ? (data as any).id : null;

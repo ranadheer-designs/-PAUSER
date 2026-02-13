@@ -184,7 +184,7 @@ export default function DeepFocusPage({ params }: PageProps) {
             const mapped: Checkpoint[] = generated.map(cp => ({
               id: cp.id,
               timestamp: cp.timestamp,
-              type: cp.type,
+              type: cp.type.toLowerCase() as Checkpoint['type'], // Normalize to lowercase for frontend
               title: cp.title,
               completed: cp.completed,
               content: cp.content,

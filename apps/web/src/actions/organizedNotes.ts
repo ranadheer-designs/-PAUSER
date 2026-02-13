@@ -12,9 +12,9 @@ export async function organizeNotesAction(
 ): Promise<{ success: boolean; data?: OrganizedNotesAIResult; error?: string }> {
   try {
     const openRouterKey = process.env.OPENROUTER_API_KEY;
-    const geminiKey = process.env.GEMINI_API_KEY; // No NEXT_PUBLIC_ check here, purely server-side
+    const groqKey = process.env.GROQ_API_KEY;
 
-    if (!openRouterKey && !geminiKey) {
+    if (!openRouterKey && !groqKey) {
       console.error('[organizeNotesAction] No API keys configured');
       return { success: false, error: 'AI service not configured on server' };
     }
@@ -22,8 +22,8 @@ export async function organizeNotesAction(
     const aiService = new AIService({
       enabled: true,
       model: model || 'meta-llama/llama-3.3-70b-instruct:free',
-      apiKey: openRouterKey || geminiKey || '', // AIService handles empty string if geminiKey is set via other property
-      geminiApiKey: geminiKey, // For hybrid provider support
+      apiKey: openRouterKey || groqKey || '',
+      groqApiKey: groqKey,
     });
 
     console.log(`[organizeNotesAction] Organizing ${notes.length} notes...`);

@@ -2,7 +2,7 @@
  * AI Service
  * 
  * The main entry point for AI features.
- * Uses Gemini as primary provider for code challenges, with OpenRouter fallback.
+ * Uses Groq as primary provider, with OpenRouter fallback.
  */
 
 import type { 
@@ -63,7 +63,7 @@ import {
   ADAPTIVE_CHECKPOINT_USER_PROMPT
 } from './prompts';
 import { AIProvider } from './provider';
-import { GeminiProvider, isGeminiConfigured } from './gemini-provider';
+import { GroqProvider, isGroqConfigured } from './groq-provider';
 import { z } from 'zod';
 
 // Schema wrapper for the list
@@ -72,10 +72,10 @@ const TeachingMomentsResponseSchema = z.object({
 });
 
 /**
- * Extended AI Config with optional Gemini key
+ * Extended AI Config with optional Groq key
  */
 export interface ExtendedAIConfig extends AIConfig {
-  geminiApiKey?: string;
+  groqApiKey?: string;
 }
 
 /**
@@ -84,52 +84,63 @@ export interface ExtendedAIConfig extends AIConfig {
  * Updated: 2025 - using currently available free models
  */
 const MODEL_CHAINS = {
-  // For quiz and flashcard generation - need strong instruction following
+  // For quiz and flashcard generation - need strong instruction following and large context
   education: [
-    'meta-llama/llama-3.3-70b-instruct:free',   // Best instruction following
-    'google/gemini-2.0-flash-exp:free',          // Fast and capable
-    'google/gemma-3-12b-it:free',                // Reliable backup
-    'mistralai/mistral-small-3.1-24b-instruct:free', // Strong fallback
+    'tngtech/deepseek-r1t2-chimera:free',        // User-verified strong reasoning
+    'arcee-ai/trinity-large-preview:free',       // User-verified fallback
+    'meta-llama/llama-3.3-70b-instruct:free',    // Reliable fallback
+    'deepseek/deepseek-r1:free',                 // Top-tier reasoning
+    'google/gemini-2.0-pro-exp-02-05:free',       // fast & smart
+    'openrouter/free',                           // General free tier aggregator
+    'stepfun/step-3.5-flash:free',
+    'liquid/lfm-2.5-1.2b-instruct:free',
+    'liquid/lfm-2.5-1.2b-thinking:free',
   ],
   
   // For code challenges - need coding expertise
   coding: [
-    'deepseek/deepseek-r1-0528:free',            // Best for code reasoning
-    'meta-llama/llama-3.3-70b-instruct:free',    // Strong general model
-    'google/gemma-3-12b-it:free',                // Backup
-    'mistralai/mistral-small-3.1-24b-instruct:free', // Fallback
+    'deepseek/deepseek-r1:free',                 // Top-tier reasoning
+    'tngtech/deepseek-r1t2-chimera:free',        // Strong alternative
+    'meta-llama/llama-3.3-70b-instruct:free',    // Reliable generalist
+    'mistralai/mistral-small-3.1-24b-instruct:free', // Valid backup
+    'nvidia/llama-3.1-nemotron-70b-instruct:free', // Strong coding model
+    'qwen/qwen3-coder:free',
+    'openai/gpt-oss-20b:free',
+    'qwen/qwen3-next-80b-a3b-instruct:free',
   ],
   
-  // For content classification - need speed and accuracy
+  // For content classification - need speed
   classifier: [
-    'google/gemma-3-4b-it:free',                 // Fast and accurate
-    'meta-llama/llama-3.2-3b-instruct:free',     // Lightweight
-    'google/gemini-2.0-flash-exp:free',          // Reliable fallback
+    'meta-llama/llama-3.2-3b-instruct:free',     // Very fast
+    'google/gemma-2-9b-it:free',                 // Reliable small model
+    'microsoft/phi-3-mini-128k-instruct:free',   // Fast & capable
+    'openrouter/free',                           // Fallback
+    'liquid/lfm-2.5-1.2b-instruct:free',
   ],
 };
 
 export class AIService {
   private config: AIConfig;
-  private geminiProvider: GeminiProvider | null = null;
+  private groqProvider: GroqProvider | null = null;
 
   constructor(config: AIConfig | ExtendedAIConfig) {
     this.config = config;
     
-    // Initialize Gemini provider if key is available
-    const geminiKey = (config as ExtendedAIConfig).geminiApiKey || 
-                      (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : undefined);
+    // Initialize Groq provider if key is available
+    const groqKey = (config as ExtendedAIConfig).groqApiKey || 
+                      (typeof process !== 'undefined' ? process.env?.GROQ_API_KEY : undefined);
     
-    if (isGeminiConfigured(geminiKey)) {
-      this.geminiProvider = new GeminiProvider({ 
-        apiKey: geminiKey!,
-        model: 'gemini-1.5-flash' // Fast model for code generation
+    if (isGroqConfigured(groqKey)) {
+      this.groqProvider = new GroqProvider({ 
+        apiKey: groqKey!,
+        model: 'llama-3.3-70b-versatile' // Fast model for code generation
       });
-      console.log('[AI] Gemini provider initialized');
+      console.log('[AI] Groq provider initialized');
     }
   }
 
   /**
-   * Try generation with fallback chain
+   * Try generation with fallback chain and exponential backoff
    */
   private async generateWithFallback<T>(
     modelChain: string[],
@@ -141,25 +152,51 @@ export class AIService {
     let lastError: Error | null = null;
     
     for (const model of modelChain) {
-      try {
-        console.log(`[AI] Trying ${model} for ${taskName}...`);
-        
-        const provider = new AIProvider({
-          ...this.config,
-          model,
-        });
-        
-        const result = await provider.generate(prompt, schema, systemPrompt);
-        console.log(`[AI] Success with ${model} for ${taskName}`);
-        return result;
-        
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
-        console.warn(`[AI] ${model} failed for ${taskName}:`, lastError.message);
-        
-        // Wait a bit before trying next model (rate limit prevention)
-        await new Promise(resolve => setTimeout(resolve, 500));
+      // Retry logic for each model
+      const MAX_RETRIES = 2;
+      let attempt = 0;
+      
+      while (attempt <= MAX_RETRIES) {
+        try {
+          if (attempt > 0) console.log(`[AI] Retrying ${model} for ${taskName} (Attempt ${attempt + 1}/${MAX_RETRIES + 1})...`);
+          else console.log(`[AI] Trying ${model} for ${taskName}...`);
+          
+          const provider = new AIProvider({
+            ...this.config,
+            model,
+          });
+          
+          const result = await provider.generate(prompt, schema, systemPrompt);
+          console.log(`[AI] Success with ${model} for ${taskName}`);
+          return result;
+          
+        } catch (error: any) {
+          lastError = error instanceof Error ? error : new Error(String(error));
+          const errorMessage = lastError.message.toLowerCase();
+          
+          // Check if error is retryable (Rate limit or Server error)
+          const isRetryable = errorMessage.includes('429') || 
+                              errorMessage.includes('500') || 
+                              errorMessage.includes('502') || 
+                              errorMessage.includes('503') ||
+                              errorMessage.includes('rate limit');
+                              
+          if (isRetryable && attempt < MAX_RETRIES) {
+             const delay = Math.pow(2, attempt) * 1000; // Exponential backoff: 1s, 2s, 4s...
+             console.warn(`[AI] ${model} hit limits (${lastError.message}). Retrying in ${delay}ms...`);
+             await new Promise(resolve => setTimeout(resolve, delay));
+             attempt++;
+             continue;
+          }
+          
+          // If not retryable or max retries reached, break inner loop to try next model
+          console.warn(`[AI] ${model} failed for ${taskName}:`, lastError.message);
+          break; 
+        }
       }
+      
+      // Short pause before switching models to be nice to the API
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
     
     throw lastError || new Error('All models failed');
@@ -215,24 +252,24 @@ export class AIService {
 
     console.log(`[AI] Analyzing full video: "${input.title}" (${input.transcript.length} chars)`);
 
-    // Try Gemini first for large context analysis (supports 1M tokens)
-    if (this.geminiProvider) {
+    // Try Groq first for fast inference
+    if (this.groqProvider) {
       try {
-        console.log('[AI] Using Gemini for full transcript analysis...');
+        console.log('[AI] Using Groq for full transcript analysis...');
         const prompt = ANALYZE_VIDEO_CONTENT_PROMPT
           .replace('{{title}}', input.title)
-          .replace('{{transcript}}', input.transcript.slice(0, 30000)); // Gemini can handle large context
+          .replace('{{transcript}}', input.transcript.slice(0, 15000)); // Reduced from 25000 to avoid 12k TPM limit on Free Tier
 
-        const result = await this.geminiProvider.generateWithRetry(
+        const result = await this.groqProvider.generateWithRetry(
           prompt,
           VideoAnalysisSchema,
           SYSTEM_PROMPT,
           2
         );
-        console.log(`[AI] Gemini analysis complete: language=${result.language}, concepts=${result.keyConcepts.length}`);
+        console.log(`[AI] Groq analysis complete: language=${result.language}, concepts=${result.keyConcepts.length}`);
         return result;
       } catch (error) {
-        console.warn('[AI] Gemini video analysis failed, falling back to OpenRouter:', error);
+        console.warn('[AI] Groq video analysis failed, falling back to OpenRouter:', error);
       }
     }
 
@@ -477,7 +514,7 @@ export class AIService {
 
   /**
    * Generate a code challenge from transcript.
-   * Uses Gemini as primary provider for better code generation quality.
+   * Uses Groq as primary provider for fast code generation.
    */
   async generateCodeChallenge(input: GenerateCodeChallengeInput): Promise<CodeChallengeGenerationResult> {
     if (!this.config.enabled) {
@@ -502,20 +539,20 @@ IMPORTANT: Your challenge MUST test one of the key concepts listed above.
       prompt = prompt.replace('{{transcript}}', contextInfo + '\n\nTRANSCRIPT:\n' + input.transcript.slice(0, 5000));
     }
 
-    // Try Gemini first if available (better for code generation)
-    if (this.geminiProvider) {
+    // Try Groq first if available (fast code generation)
+    if (this.groqProvider) {
       try {
-        console.log(`[AI] Using Gemini for ${input.language} code challenge...`);
-        const result = await this.geminiProvider.generateWithRetry(
+        console.log(`[AI] Using Groq for ${input.language} code challenge...`);
+        const result = await this.groqProvider.generateWithRetry(
           prompt,
           CodeChallengeGenerationSchema,
           SYSTEM_PROMPT,
           3 // max retries - increased for reliability
         );
-        console.log(`[AI] Gemini ${input.language} code challenge successful: "${result.problem.slice(0, 50)}"`);
+        console.log(`[AI] Groq ${input.language} code challenge successful: "${result.problem.slice(0, 50)}"`);
         return result;
       } catch (error) {
-        console.warn('[AI] Gemini failed, falling back to OpenRouter:', error);
+        console.warn('[AI] Groq failed, falling back to OpenRouter:', error);
       }
     }
 
@@ -654,7 +691,7 @@ IMPORTANT: Your challenge MUST test one of the key concepts listed above.
   /**
    * Organize learner's notes into sections WITHOUT rewriting.
    * Uses free OpenRouter model fallback chain for reliability.
-   * Falls back to Gemini 2.5 Flash if OpenRouter models fail.
+   * Falls back to Groq if OpenRouter models fail.
    * 
    * CRITICAL: This method validates that AI output preserves verbatim text.
    * If AI violates the rules (rewrites text), null is returned.
@@ -695,32 +732,31 @@ IMPORTANT: Your challenge MUST test one of the key concepts listed above.
     } catch (openRouterError) {
       console.warn('[AI] OpenRouter models failed for notes organization:', openRouterError);
 
-      // Try Gemini 2.5 Flash as final fallback
-      const geminiKey = (this.config as ExtendedAIConfig).geminiApiKey || 
-                        (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : undefined) ||
-                        (typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_GEMINI_API_KEY : undefined);
+      // Try Groq as final fallback
+      const groqKey = (this.config as ExtendedAIConfig).groqApiKey || 
+                        (typeof process !== 'undefined' ? process.env?.GROQ_API_KEY : undefined);
 
-      if (isGeminiConfigured(geminiKey)) {
+      if (isGroqConfigured(groqKey)) {
         try {
-          console.log('[AI] Falling back to Gemini 2.5 Flash for notes organization...');
-          const geminiFallback = new GeminiProvider({
-            apiKey: geminiKey!,
-            model: 'gemini-2.5-flash'
+          console.log('[AI] Falling back to Groq for notes organization...');
+          const groqFallback = new GroqProvider({
+            apiKey: groqKey!,
+            model: 'llama-3.3-70b-versatile'
           });
 
-          result = await geminiFallback.generateWithRetry(
+          result = await groqFallback.generateWithRetry(
             prompt,
             OrganizedNotesSchema,
             SYSTEM_PROMPT,
             2 // max retries
           );
-          console.log('[AI] Gemini 2.5 Flash organization successful');
-        } catch (geminiError) {
-          console.error('[AI] Gemini 2.5 Flash fallback also failed:', geminiError);
+          console.log('[AI] Groq organization successful');
+        } catch (groqError) {
+          console.error('[AI] Groq fallback also failed:', groqError);
           return null;
         }
       } else {
-        console.error('[AI] No Gemini API key configured for fallback');
+        console.error('[AI] No Groq API key configured for fallback');
         return null;
       }
     }
@@ -802,7 +838,7 @@ IMPORTANT: Your challenge MUST test one of the key concepts listed above.
   /**
    * Generate adaptive, context-aware learning checkpoints.
    * Phase 2: Uses advanced AI prompt for intelligent checkpoint placement.
-   * Uses Gemini first for large context, then falls back to OpenRouter.
+   * Uses Groq first for fast inference, then falls back to OpenRouter.
    */
   async generateAdaptiveCheckpoints(
     input: GenerateAdaptiveCheckpointsInput
@@ -831,20 +867,20 @@ ${input.transcript.slice(0, 25000)}
 
 Generate checkpoints that are perfectly timed and deeply relevant to the content.`;
 
-    // Try Gemini first (better for large context with up to 1M tokens)
-    if (this.geminiProvider) {
+    // Try Groq first (fast inference)
+    if (this.groqProvider) {
       try {
-        console.log('[AI] Using Gemini for adaptive checkpoint generation...');
-        const result = await this.geminiProvider.generateWithRetry(
+        console.log('[AI] Using Groq for adaptive checkpoint generation...');
+        const result = await this.groqProvider.generateWithRetry(
           fullPrompt,
           AdaptiveCheckpointGenerationSchema,
           ADAPTIVE_CHECKPOINT_SYSTEM_PROMPT,
           2 // max retries
         );
-        console.log(`[AI] Gemini adaptive checkpoints generated: ${result.checkpoints?.length || 0} checkpoints`);
+        console.log(`[AI] Groq adaptive checkpoints generated: ${result.checkpoints?.length || 0} checkpoints`);
         return result;
       } catch (error) {
-        console.warn('[AI] Gemini adaptive checkpoint generation failed, trying OpenRouter:', error);
+        console.warn('[AI] Groq adaptive checkpoint generation failed, trying OpenRouter:', error);
       }
     }
 

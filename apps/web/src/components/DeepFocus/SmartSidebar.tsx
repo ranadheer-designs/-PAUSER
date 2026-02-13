@@ -12,7 +12,7 @@
  */
 
 import { useState, useCallback, useMemo, useRef } from 'react';
-import type { Checkpoint, CheckpointContent, PredictionContent, ExplanationContent, OneSentenceRuleContent, SnapshotContent, PracticeResourceContent } from '@/hooks/useDeepFocus';
+import type { Checkpoint, CheckpointContent, PredictionContent, ExplanationContent, OneSentenceRuleContent, SnapshotContent, PracticeResourceContent, CodePracticeContent, ConceptQuizContent } from '@/hooks/useDeepFocus';
 import type { Note } from '@pauser/common';
 import { createArtifact } from '@/actions/artifactActions';
 import { NotesPanel } from './NotesPanel';
@@ -21,6 +21,8 @@ import { SnapshotCheckpoint } from './SnapshotCheckpoint';
 import { PredictionCheckpoint } from './PredictionCheckpoint';
 import { ExplainItBackCheckpoint } from './ExplainItBackCheckpoint';
 import { OneSentenceRuleCheckpoint } from './OneSentenceRuleCheckpoint';
+import { CodePracticeCheckpoint } from './CodePracticeCheckpoint';
+import { ConceptQuizCheckpoint } from './ConceptQuizCheckpoint';
 import styles from './SmartSidebar.module.css';
 
 // Re-export content types for convenience
@@ -70,6 +72,8 @@ function getCheckpointIcon(type: string): string {
     case 'one_sentence_rule': return '📝';
     case 'snapshot': return '💭';
     case 'practice_resource': return '💻';
+    case 'code_practice': return '💻';
+    case 'concept_quiz': return '❓';
     default: return '📍';
   }
 }
@@ -84,6 +88,8 @@ function getCheckpointLabel(type: string): string {
     case 'one_sentence_rule': return 'One Sentence';
     case 'snapshot': return 'Understanding Snapshot';
     case 'practice_resource': return 'Practice Problem';
+    case 'code_practice': return 'Coding Practice';
+    case 'concept_quiz': return 'Concept Quiz';
     default: return 'Checkpoint';
   }
 }
@@ -279,11 +285,29 @@ export function SmartSidebar({
             onSaveArtifact={handleSaveOneSentenceArtifact}
           />
         );
+
+      case 'code_practice':
+        return (
+          <CodePracticeCheckpoint
+            content={content as CodePracticeContent}
+            title={activeCheckpoint?.title} 
+            onComplete={handleCheckpointComplete}
+            onSaveArtifact={async (data) => console.log('Code artifact saved', data)} // Placeholder save
+          />
+        );
+
+      case 'concept_quiz':
+         return (
+             <ConceptQuizCheckpoint
+                content={content as ConceptQuizContent}
+                onComplete={handleCheckpointComplete}
+             />
+         );
         
       default:
         return (
           <div className={styles.noCheckpoint}>
-            <p>Unknown checkpoint type</p>
+            <p>Unknown checkpoint type: {(content as any).type}</p>
           </div>
         );
     }
@@ -327,58 +351,43 @@ export function SmartSidebar({
       {/* Expanded Content */}
       {!collapsed && (
         <>
-          {/* Active Checkpoint Panel */}
-          <div className={`${styles.checkpointPanel} ${!activeCheckpoint ? styles.checkpointPanelInactive : ''}`}>
-            {activeCheckpoint ? (
-              <div className={styles.checkpointActive}>
-                <div className={styles.checkpointHeader}>
-                  <span className={styles.checkpointIcon}>
-                    {getCheckpointIcon(activeCheckpoint.type)}
-                  </span>
-                  <span className={styles.checkpointLabel}>
-                    {getCheckpointLabel(activeCheckpoint.type)}
-                  </span>
-                </div>
-                <h3 className={styles.checkpointTitle}>
-                  {activeCheckpoint.title}
-                </h3>
-                <div className={styles.checkpointContent}>
-                  {renderCheckpointContent}
-                </div>
+          {activeCheckpoint ? (
+            /* Active Checkpoint Panel - Takes full height */
+            <div className={`${styles.checkpointPanel} ${styles.checkpointActive}`}>
+              <div className={styles.checkpointHeader}>
+                <span className={styles.checkpointIcon}>
+                  {getCheckpointIcon(activeCheckpoint.type)}
+                </span>
+                <span className={styles.checkpointLabel}>
+                  {getCheckpointLabel(activeCheckpoint.type)}
+                </span>
               </div>
-            ) : (
-              <div className={styles.noCheckpoint}>
-                <div className={styles.noCheckpointIcon}>📚</div>
-                <p className={styles.noCheckpointText}>
-                  {checkpointsEnabled 
-                    ? 'Keep watching - a checkpoint will appear soon!'
-                    : 'Enable checkpoints to start active learning'
-                  }
-                </p>
+              <h3 className={styles.checkpointTitle}>
+                {activeCheckpoint.title}
+              </h3>
+              <div className={styles.checkpointContent}>
+                {renderCheckpointContent}
               </div>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div className={styles.divider} />
-
-          {/* Notes Section */}
-          <div className={styles.notesSection}>
-            <NotesPanel
-              contentId={videoId}
-              notes={notes}
-              currentTime={currentTime}
-              onTakeNote={onTakeNote}
-              onNoteClick={onNoteClick}
-              onNoteSave={onNoteSave}
-              onNoteComplete={onNoteComplete}
-              onEditingChange={onEditingChange}
-              triggerTakeNoteRef={triggerTakeNoteRef}
-              checkpointsEnabled={checkpointsEnabled}
-              onToggleCheckpoints={onToggleCheckpoints}
-              isCheckpointsPending={isCheckpointsPending}
-            />
-          </div>
+            </div>
+          ) : (
+            /* Notes Section - Takes full height when no checkpoint */
+            <div className={styles.notesSection}>
+              <NotesPanel
+                contentId={videoId}
+                notes={notes}
+                currentTime={currentTime}
+                onTakeNote={onTakeNote}
+                onNoteClick={onNoteClick}
+                onNoteSave={onNoteSave}
+                onNoteComplete={onNoteComplete}
+                onEditingChange={onEditingChange}
+                triggerTakeNoteRef={triggerTakeNoteRef}
+                checkpointsEnabled={checkpointsEnabled}
+                onToggleCheckpoints={onToggleCheckpoints}
+                isCheckpointsPending={isCheckpointsPending}
+              />
+            </div>
+          )}
         </>
       )}
     </aside>
