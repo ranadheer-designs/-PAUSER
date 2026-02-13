@@ -1,6 +1,9 @@
 import { YoutubeTranscript } from 'youtube-transcript';
 import { getSubtitles } from 'youtube-captions-scraper';
 import { getVideoDetails } from 'youtube-caption-extractor';
+import { spawn } from 'child_process';
+import path from 'path';
+import * as fs from 'fs';
 
 
 export interface TranscriptSegment {
@@ -142,41 +145,75 @@ export async function robustExtractTranscript(videoId: string): Promise<Extracti
     console.warn(`[TranscriptExtractor] Method 4 failed:`, error instanceof Error ? error.message : error);
   }
 
-  // Method 5: Python Serverless Function (Vercel)
-  // This replaces the local spawn method to work in production
+  // Method 5: Python Fallback (Vercel Function vs Local Script)
   try {
-    console.log(`[TranscriptExtractor] Method 5: Trying Vercel Python API...`);
-    
-    // Construct absolute URL if on server side, or relative if on client
-    // In Vercel serverless environment or local dev
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (isProduction ? 'https://pauser.vercel.app' : 'http://localhost:3000');
-    const apiUrl = `${baseUrl}/api/transcript?videoId=${videoId}`;
-    
-    console.log(`[TranscriptExtractor] Fetching from: ${apiUrl}`);
-    
-    const response = await fetch(apiUrl);
-    
-    if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.segments && data.segments.length > 0) {
-             console.log(`[TranscriptExtractor] Method 5 Success: ${data.segments.length} segments found.`);
-             return {
-                 segments: data.segments.map((s: any) => ({
-                     start: s.offset / 1000,
-                     duration: s.duration / 1000,
-                     text: s.text
-                 })),
-                 method: 'fallback' // Keeping 'fallback' or we could name it 'api-python'
-             };
+    if (isProduction) {
+        console.log(`[TranscriptExtractor] Method 5: Trying Vercel Python API...`);
+        
+        // Construct absolute URL if on server side, or relative if on client
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pauser.vercel.app';
+        const apiUrl = `${baseUrl}/api/transcript?videoId=${videoId}`;
+        
+        console.log(`[TranscriptExtractor] Fetching from: ${apiUrl}`);
+        
+        const response = await fetch(apiUrl);
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.segments && data.segments.length > 0) {
+                 console.log(`[TranscriptExtractor] Method 5 Success: ${data.segments.length} segments found (via API).`);
+                 return {
+                     segments: data.segments.map((s: any) => ({
+                         start: s.offset / 1000,
+                         duration: s.duration / 1000,
+                         text: s.text
+                     })),
+                     method: 'fallback'
+                 };
+            } else {
+                 console.warn(`[TranscriptExtractor] Method 5 response error:`, data.error);
+            }
         } else {
-             console.warn(`[TranscriptExtractor] Method 5 response error:`, data.error);
+             console.warn(`[TranscriptExtractor] Method 5 HTTP error: ${response.status} ${response.statusText}`);
         }
     } else {
-         console.warn(`[TranscriptExtractor] Method 5 HTTP error: ${response.status} ${response.statusText}`);
-         const text = await response.text();
-         console.warn(`[TranscriptExtractor] Response body:`, text);
+        // Local Development: Spawn Python script directly
+        console.log(`[TranscriptExtractor] Method 5: Trying Python script (youtube-transcript-api) [LOCAL ONLY]...`);
+        let targetScript = path.resolve(process.cwd(), 'scripts/transcript.py');
+        if (!fs.existsSync(targetScript)) {
+            // Try looking in root if we are in apps/web
+            targetScript = path.resolve(process.cwd(), '../../scripts/transcript.py'); 
+        }
+        
+        if (fs.existsSync(targetScript)) {
+            const pythonResult = await new Promise<any>((resolve, reject) => {
+                const pyProcess = spawn('python', [targetScript, videoId]);
+                let dataString = '';
+                let errorString = '';
+
+                pyProcess.stdout.on('data', (data) => dataString += data.toString());
+                pyProcess.stderr.on('data', (data) => errorString += data.toString());
+                pyProcess.on('error', (err) => reject(new Error(err.message)));
+                pyProcess.on('close', (code) => {
+                     if (code !== 0) reject(new Error(errorString));
+                     else resolve(JSON.parse(dataString));
+                });
+            });
+
+            if (pythonResult.success && pythonResult.segments.length > 0) {
+                 return {
+                     segments: pythonResult.segments.map((s: any) => ({
+                         start: s.offset / 1000,
+                         duration: s.duration / 1000,
+                         text: s.text
+                     })),
+                     method: 'fallback'
+                 };
+            }
+        } else {
+             console.warn(`[TranscriptExtractor] Method 5 failed: Script not found at ${targetScript}`);
+        }
     }
-    
   } catch (error) {
      console.warn(`[TranscriptExtractor] Method 5 failed:`, error instanceof Error ? error.message : error);
   }
